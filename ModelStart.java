@@ -129,6 +129,7 @@ public class ModelStart {
         int randomValue = random.nextInt(ConsoleView.WIDTH - 1) + 1;
 
         Bullet bulletTest = new Bullet('＊', randomValue, 0, 1, 1, 254, baseBackGroundColor);
+        // Bullet bulletTest = new Bullet('＊', randomValue, 0, 1, 1, 254, 1);
         bullets.add(bulletTest);
     }
 
@@ -179,18 +180,17 @@ public class ModelStart {
             // gameState.setNextState();
             return;
         }
-
-        if(event.equals("UP")){
+        if(event.equals("UP") || event.equals("w")){
             // 上矢印キーが押されたときの処理
             userSelect.previous();
             return;
         }
-        if(event.equals("DOWN")){
+        if(event.equals("DOWN") || event.equals("s")){
             // 下矢印キーが押されたときの処理
             userSelect.next();
             return;
         }
-        if(event.equals("LEFT")){
+        if(event.equals("LEFT") || event.equals("a")){
             // 左矢印キーが押されたときの処理
             if(isUserEnterDifficulty){
                 // 難易度選択中の場合
@@ -199,7 +199,7 @@ public class ModelStart {
             }
             return;
         }
-        if(event.equals("RIGHT")){
+        if(event.equals("RIGHT") || event.equals("d")){
             // 右矢印キーが押されたときの処理
             if(isUserEnterDifficulty){
                 // 難易度選択中の場合
@@ -255,13 +255,11 @@ public class ModelStart {
             return;
         }
 
-       
- 
         view.putMap(MountainX, MountainY, Mountain);
         view.putMap(Logo1X, Logo1Y, Logo1);
         view.putMap(Logo2X, Logo2Y, Logo2);
-        view.setResetBackGroundColor(baseBackGroundColor);
         putBullets();
+        view.setResetBackGroundColor(baseBackGroundColor);
         putUserSelect();
         return ;
         

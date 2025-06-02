@@ -13,7 +13,8 @@ public class ModelPlaying {
     private ReadFile readfile;
     private int baseBackGroundColor;
     private GameState gameState;
-    private int grancePeriod;
+    
+    private MapData skyMap;
 
     private GameDifficulty gameDifficulty; // ゲームの難易度（1: Easy, 2: Normal, 3: Hard）
 
@@ -45,6 +46,10 @@ public class ModelPlaying {
 
     // 障害物を置く頻度の設定
     private int obstacleFrequency = 5; 
+
+    // ゲームマップの内、プレイヤーのいけない所を設定
+    private int grancePeriod;
+
     public void resetState(){
         // ゲームの状態をリセットする
         this.obstacles.clear();
@@ -54,7 +59,6 @@ public class ModelPlaying {
         this.invincibleTime = -1;
         this.flame = 0;
         this.score.resetScore();
-        this.grancePeriod = 20;
     }
 
     ModelPlaying(ConsoleView view, GameState gameState, GameDifficulty gameDifficulty, Score score) {
@@ -70,7 +74,7 @@ public class ModelPlaying {
         this.grancePeriod = 40;
         this.gameDifficulty = gameDifficulty;
         baseBackGroundColor = 15;                                   
-        this.player = new Player(3, GameMapView.WIDTH / 2, GameMapView.HEIGHT / 2, '＠', grancePeriod, grancePeriod/2, GameMapView.WIDTH-grancePeriod, GameMapView.HEIGHT-grancePeriod/2);
+        this.player = new Player(3, GameMapView.WIDTH / 2, GameMapView.HEIGHT / 2, '＠', grancePeriod, grancePeriod/4, GameMapView.WIDTH-grancePeriod, 31);
         this.player.setplayerCharColor(1);
         this.player.setPlayerBackGroundColor(baseBackGroundColor);
         this.player.setHitpointBackGroundColor(baseBackGroundColor);
@@ -106,6 +110,11 @@ public class ModelPlaying {
 
         this.gameMapView = new GameMapView(player);
         this.gameMapView.setResetBackGroundColor(baseBackGroundColor);
+
+        this.skyMap = new MapData(GameMapView.HEIGHT, grancePeriod);
+
+        this.skyMap.clearCharColor(51);
+        this.skyMap.clearBackground(51);
 
     }
 
@@ -167,12 +176,11 @@ public class ModelPlaying {
         }
 
         Random random = new Random();
-        // 例: 1からobstacleFrequency未満の乱数
         int randomValue = random.nextInt(obstacleFrequency - 1) + 1;
         for(int i = 0;i < randomValue;i++){
             // ランダムに弾を生成
-            int randomX = random.nextInt(GameMapView.WIDTH);
-            Obstacle obstacle = new Obstacle('＊', randomX, GameMapView.HEIGHT-1, 0, -1, 1, baseBackGroundColor);
+            int randomX = random.nextInt(GameMapView.WIDTH - grancePeriod) + grancePeriod;
+            Obstacle obstacle = new Obstacle('＊', randomX, GameMapView.HEIGHT-2, 0, -1, 0, baseBackGroundColor);
             obstacles.add(obstacle);
         }
 
@@ -217,22 +225,22 @@ public class ModelPlaying {
             return;
         }
 
-        if(event.equals("UP")){
+        if(event.equals("UP") || event.equals("w")){
             // 上矢印キーが押されたときの処理
             player.subY();
             return;
         }
-        if(event.equals("DOWN")){
+        if(event.equals("DOWN") || event.equals("s")){
             // 下矢印キーが押されたときの処理
             player.addY();
             return;
         }
-        if(event.equals("LEFT")){
+        if(event.equals("LEFT") || event.equals("a")){
             // 左矢印キーが押されたときの処理
             player.subX();
             return;
         }
-        if(event.equals("RIGHT")){
+        if(event.equals("RIGHT") || event.equals("d")){
             // 右矢印キーが押されたときの処理
             player.addX();
             return;
@@ -245,15 +253,15 @@ public class ModelPlaying {
         switch(gameDifficulty.getCurrentSelection()) {
             case GameDifficulty.NORMAL: // Normal
                 intervalFlag = 30;
-                obstacleFrequency = 10;
+                obstacleFrequency = 4;
                 break;
             case GameDifficulty.HARD: // Hard
                 intervalFlag = 25;
-                obstacleFrequency = 15;
+                obstacleFrequency = 8;
                 break;
             case GameDifficulty.ENDLRESS: // Endless
                 intervalFlag = 25;
-                obstacleFrequency = 15;
+                obstacleFrequency = 5;
                 break;
             default:
                 intervalFlag = 30;
@@ -278,6 +286,8 @@ public class ModelPlaying {
 
         // 画面描画処理
 
+        
+
         int playerX = player.getPositionX();
         int playerY = player.getPositionY();
 
@@ -297,6 +307,10 @@ public class ModelPlaying {
         
         putObstacles();
         putFlags();
+
+        gameMapView.putMap(0, 0, skyMap); // 空のマップを描画 なぜかばぐる
+        gameMapView.putMap(gameMapView.WIDTH - grancePeriod, 0, skyMap); // プレイ中のマップを描画
+
         gameMapView.putString("ＨＰ：", 0, 0, 0, baseBackGroundColor);
         player.putPlayerHitpoint(gameMapView, startX, startY);
         score.setColor(0, baseBackGroundColor);
@@ -317,8 +331,11 @@ public class ModelPlaying {
         missObjComment.putComment(gameMapView);
         missFlagComment.putComment(gameMapView);
         successComment.putComment(gameMapView);
-        
 
+
+
+        
+        
         // ConsoleViewに描画
         gameMapView.putConsoleView(view);
         

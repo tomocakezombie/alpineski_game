@@ -23,7 +23,7 @@ public class MapData {
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                this.map[i][j] = ' ';
+                this.map[i][j] = '　';
                 this.mapCharColor[i][j] = 255;
                 this.mapBackGroundColor[i][j] = 0;
             }
@@ -78,6 +78,20 @@ public class MapData {
         return true;
     }
 
+    public boolean clearCharColor(int charColor) {
+        if(charColor < 0 || charColor > ConsoleColor.COLORMAXINDEX) {
+            return false;
+        }
+
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                this.mapCharColor[i][j] = charColor;
+            }
+        }
+
+        return true;
+    }
+
     public boolean clear(){
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -103,8 +117,10 @@ public class MapData {
             return false;
         }
 
-        mapCharColor[y][x] = charColor;
-        mapBackGroundColor[y][x] = backGroundColor;
+        this.mapCharColor[y][x] = charColor;
+        this.mapBackGroundColor[y][x] = backGroundColor;
+
+        // System.out.println("setColor: (" + x + ", " + y + ") = " + charColor + ", " + backGroundColor);
 
         return true;
     }
@@ -121,6 +137,22 @@ public class MapData {
         }
 
         mapCharColor[y][x] = charColor;
+
+        return true;
+    }
+
+    public boolean setBackGroundColor(int x, int y, int backGroundColor) {
+        if (x < 0 || x >= width) {
+            return false;
+        }
+        if (y < 0 || y >= height) {
+            return false;
+        }
+        if (backGroundColor < 0 || backGroundColor >= ConsoleColor.COLORMAXINDEX) {
+            return false;
+        }
+
+        mapBackGroundColor[y][x] = backGroundColor;
 
         return true;
     }

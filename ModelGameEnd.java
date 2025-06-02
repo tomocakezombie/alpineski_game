@@ -80,7 +80,7 @@ public class ModelGameEnd {
         // キー入力処理
         if(event.equals("ENTER")){
             // ENTERキーが押されたときの処理
-            isView = true;
+            gameState.setNextState();
             return;
         }
         if(event.equals("SPACE")){

@@ -7,11 +7,13 @@ public class ModelWrite {
 
     private Score score;
     private GameState gameState;
+    private GameDifficulty gameDifficulty;
     private String filePath = "./ReadFiles/RANKING.txt";
 
-    ModelWrite(Score score, GameState gameState) {
+    ModelWrite(Score score, GameState gameState, GameDifficulty gameDifficulty) {
         this.score = score;
         this.gameState = gameState;
+        this.gameDifficulty = gameDifficulty;
     }
 
     public void process(String event) throws IOException, InterruptedException {
