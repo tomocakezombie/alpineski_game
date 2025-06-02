@@ -8,7 +8,9 @@ public class ModelWrite {
     private Score score;
     private GameState gameState;
     private GameDifficulty gameDifficulty;
-    private String filePath = "./ReadFiles/RANKING.txt";
+    private String filePathNormal = "./ReadFiles/Ranking/RANKINGNORMAL.txt";
+    private String filePathHard = "./ReadFiles/Ranking/RANKINGHARD.txt";
+    private String filePathENDLESS = "./ReadFiles/Ranking/RANKINGENDLESS.txt";
 
     ModelWrite(Score score, GameState gameState, GameDifficulty gameDifficulty) {
         this.score = score;
@@ -48,7 +50,12 @@ public class ModelWrite {
         try {
             String scoreLine = String.valueOf(score.getScore()) + System.lineSeparator();
             Files.write(
-                Path.of(filePath),
+                switch (gameDifficulty.getCurrentSelection()) {
+                    case GameDifficulty.NORMAL -> Path.of(filePathNormal);
+                    case GameDifficulty.HARD -> Path.of(filePathHard);
+                    case GameDifficulty.ENDLRESS -> Path.of(filePathENDLESS);
+                    default -> throw new IllegalStateException("Unexpected value: " + gameDifficulty.getCurrentSelection());
+                },
                 scoreLine.getBytes(),
                 StandardOpenOption.CREATE, // ファイルがなければ作成
                 StandardOpenOption.APPEND  // 追記モード

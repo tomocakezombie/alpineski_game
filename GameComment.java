@@ -18,6 +18,10 @@ public class GameComment {
         this.backGroundColor = backGroundColor;
     }
 
+    public void resetGameComment(){
+        this.viewFlame = viewFlameMax; // 初期値は最大フレーム数
+    }
+
     public void setPosition(int x, int y) {
         this.commentX = x;
         this.commentY = y;
@@ -39,6 +43,17 @@ public class GameComment {
         }
 
         view.putString(comment, commentX, commentY, charColor, backGroundColor);
+        // view.putString(comment, commentX, commentY, charColor);
+        return true;
+    }
+
+    public boolean putComment(GameMapView view) throws InterruptedException {
+        if(viewFlame >= viewFlameMax){
+            return false;
+        }
+
+        // view.putString(comment, commentX, commentY, charColor, backGroundColor);
+        view.putString(comment, commentX, commentY, charColor);
         return true;
     }
 }

@@ -58,6 +58,10 @@ public class ModelPlaying {
         this.player.resetPosition();
         this.invincibleTime = -1;
         this.flame = 0;
+        missObjComment.resetGameComment();
+        missFlagComment.resetGameComment();
+        successComment.resetGameComment();
+        this.gameMapView.setResetBackGroundColor(baseBackGroundColor);
         this.score.resetScore();
     }
 
@@ -99,7 +103,7 @@ public class ModelPlaying {
 
         this.score = score;
         this.score.setColor(0, baseBackGroundColor);
-        this.score.setPosition(startX+1, startY+1);
+        this.score.setPosition(startX, startY+1);
         
         this.missObjComment = new GameComment("ミス！", INVINCIBLE_TIME_MAX);
         this.missObjComment.setColor(1, baseBackGroundColor);
@@ -113,8 +117,8 @@ public class ModelPlaying {
 
         this.skyMap = new MapData(GameMapView.HEIGHT, grancePeriod);
 
-        this.skyMap.clearCharColor(51);
-        this.skyMap.clearBackground(51);
+        this.skyMap.clearCharColor(111);
+        this.skyMap.clearBackground(111);
 
     }
 
@@ -171,17 +175,35 @@ public class ModelPlaying {
     // 時間経過イベントの処理
     private void processTimeElapsed(){
 
-        if(flame % intervalFlag == 0){
-            generateFlag();
-        }
+
 
         Random random = new Random();
         int randomValue = random.nextInt(obstacleFrequency - 1) + 1;
-        for(int i = 0;i < randomValue;i++){
-            // ランダムに弾を生成
+        for (int i = 0; i < randomValue; i++) {
             int randomX = random.nextInt(GameMapView.WIDTH - grancePeriod) + grancePeriod;
-            Obstacle obstacle = new Obstacle('＊', randomX, GameMapView.HEIGHT-2, 0, -1, 0, baseBackGroundColor);
+            int randomY = GameMapView.HEIGHT - 2;
+
+            // 旗の範囲にかぶっていないかチェック
+            boolean isOnFlag = false;
+            for (Flag flag : flags) {
+                if (randomY == flag.getPositionY() &&
+                    randomX >= flag.getPositionX() &&
+                    randomX <= flag.getPositionX() + flag.getLineLength() + 1) {
+                    isOnFlag = true;
+                    break;
+                }
+            }
+            if (isOnFlag) {
+                // 旗の範囲なら障害物を生成しない
+                continue;
+            }
+
+            Obstacle obstacle = new Obstacle('＊', randomX, randomY, 0, -1, 0, baseBackGroundColor);
             obstacles.add(obstacle);
+        }
+
+        if(flame % intervalFlag == 0){
+            generateFlag();
         }
 
         updateObstacles();
@@ -198,10 +220,14 @@ public class ModelPlaying {
         int randomX = grancePeriod + random.nextInt(GameMapView.WIDTH/4);
         Flag flag = new Flag('Ｆ', 'ー', randomX, GameMapView.HEIGHT-1 , 10, 1, baseBackGroundColor);
         flags.add(flag);
-        for(Iterator <Obstacle> i = obstacles.iterator();i.hasNext();) {
+
+        // 旗の位置を障害物の位置と重ならないように調整
+        for(Iterator <Obstacle> i = obstacles.iterator(); i.hasNext();) {
             Obstacle obstacle = i.next();
-            if(obstacle.getPositionX() == flag.getPositionX() && 
-                obstacle.getPositionY() == flag.getPositionY()) {
+            if( flag.getPositionX() <= obstacle.getPositionX() && 
+                obstacle.getPositionX() <= flag.getPositionX() + flag.getLineLength()+1 &&
+                flag.getPositionY() == obstacle.getPositionY()
+            ) {
                 // 旗と障害物が重なった場合は削除
                 i.remove();
             }
@@ -280,9 +306,13 @@ public class ModelPlaying {
             gameState.setNextState();
             player.resetHitpoint();
             player.resetPosition();
+            missObjComment.resetViewFlame();
+            missFlagComment.resetViewFlame();
+            successComment.resetViewFlame();
+            obstacles.clear();
+            flags.clear();
             return;
         }
-
 
         // 画面描画処理
 
@@ -301,21 +331,23 @@ public class ModelPlaying {
         int startY = playerY - centerY;
 
 
-        this.score.setPosition(startX+ConsoleView.WIDTH-4, startY);
+        this.score.setPosition(startX+ConsoleView.WIDTH-5, startY);
 
         gameMapView.setResetBackGroundColor(baseBackGroundColor);
         
-        putObstacles();
         putFlags();
-
+        putObstacles();
+        
         gameMapView.putMap(0, 0, skyMap); // 空のマップを描画 なぜかばぐる
         gameMapView.putMap(gameMapView.WIDTH - grancePeriod, 0, skyMap); // プレイ中のマップを描画
 
-        gameMapView.putString("ＨＰ：", 0, 0, 0, baseBackGroundColor);
-        player.putPlayerHitpoint(gameMapView, startX, startY);
+        gameMapView.putString("ＨＰ：", startX, startY, 0);
+        player.putPlayerHitpoint(gameMapView, startX+3, startY);
         score.setColor(0, baseBackGroundColor);
         score.put(gameMapView);
-        
+
+        gameDifficulty.setPosition(startX, startY + 1);
+        gameDifficulty.put(gameMapView);
 
         if(invincibleTime > 0){
             player.putPlayerDamage(gameMapView); // 無敵時間中は色を変えて表示
@@ -332,10 +364,6 @@ public class ModelPlaying {
         missFlagComment.putComment(gameMapView);
         successComment.putComment(gameMapView);
 
-
-
-        
-        
         // ConsoleViewに描画
         gameMapView.putConsoleView(view);
         
@@ -373,11 +401,11 @@ public class ModelPlaying {
             }
 
             if(flagPositionX <= player.getPositionX() && 
-                player.getPositionX() <= flagPositionX + flag.getLineLength()) {
+                player.getPositionX() <= flagPositionX + flag.getLineLength() + 1) {
                 successComment.resetViewFlame();
             } else {
                 missFlagComment.resetViewFlame();
-                System.out.println("missFlagComment resetViewFlame");
+                // System.out.println("missFlagComment resetViewFlame");
                 player.damage();
             }
 

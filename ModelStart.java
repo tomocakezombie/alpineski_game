@@ -280,32 +280,41 @@ public class ModelStart {
     }
 
     private void showRanking() throws IOException, InterruptedException {
-        // ファイルからスコアを読み取る
-        List<String> lines = Files.readAllLines(Path.of("./ReadFiles/RANKING.txt"));
-        List<Integer> scores = new ArrayList<>();
+        String[] files = {
+            "./ReadFiles/Ranking/RANKINGNORMAL.txt",
+            "./ReadFiles/Ranking/RANKINGHARD.txt",
+            "./ReadFiles/Ranking/RANKINGENDLESS.txt"
+        };
+        String[] titles = { "NORMAL", "HARD", "ENDLESS" };
 
-        // スコアを整数に変換
-        for (String line : lines) {
-            try {
-                scores.add(Integer.parseInt(line.trim()));
-            } catch (NumberFormatException e) {
-                System.err.println("Invalid score format: " + line);
+        int sectionY = ConsoleView.HEIGHT / 4 - 5;
+        for (int i = 0; i < files.length; i++) {
+            List<String> lines = Files.readAllLines(Path.of(files[i]));
+            List<Integer> scores = new ArrayList<>();
+
+            for (String line : lines) {
+                try {
+                    scores.add(Integer.parseInt(line.trim()));
+                } catch (NumberFormatException e) {
+                    // 無効な行は無視
+                }
             }
+            Collections.sort(scores, Collections.reverseOrder());
+
+            // タイトル表示
+            view.putString("ランキング（" + ChangeChar.toZenkaku(titles[i]) + "）", ConsoleView.WIDTH / 2 - 8, sectionY, 15, baseBackGroundColor);
+
+            // スコア表示
+            int rank = 1;
+            for (int score : scores) {
+                view.putString(ChangeChar.toZenkaku(String.valueOf(rank)) + "位：" + ChangeChar.toZenkaku(String.valueOf(score)), ConsoleView.WIDTH / 2 - 8, sectionY + rank, 15, baseBackGroundColor);
+                rank++;
+                if (rank > 10) break;
+            }
+            sectionY += 12; // 次の難易度の表示位置をずらす
         }
 
-        // スコアを降順にソート
-        Collections.sort(scores, Collections.reverseOrder());
-
-        // ランキングを表示
-        view.putString("ランキング", ConsoleView.WIDTH / 2 - 3, ConsoleView.HEIGHT / 4 - 5, 15, baseBackGroundColor);
-        int rank = 1;
-        for (int score : scores) {
-            view.putString(rank + "位: " + score, ConsoleView.WIDTH / 2 - 10, ConsoleView.HEIGHT / 4 - 5 + rank, 15, baseBackGroundColor);
-            rank++;
-            if (rank > 10) break; // 上位10位まで表示
-        }
-
-        view.putString("ランキングを確認したらＥＮＴＥＲキーを押してください", ConsoleView.WIDTH / 2 - 20, ConsoleView.HEIGHT / 4 + 12, 15, baseBackGroundColor);
+        view.putString("ランキングを確認したらＥＮＴＥＲキーを押してください", ConsoleView.WIDTH / 2 - 20, sectionY, 15, baseBackGroundColor);
     }
     
 }
