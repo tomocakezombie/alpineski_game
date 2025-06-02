@@ -6,7 +6,7 @@ public class ModelPrepareStart {
     private ConsoleView view;
     private MapData mapData;
     private int flameCount = 0;
-    private int flameCountMax = 40; // 最大フレーム数
+    private int flameCountMax = 42; // 最大フレーム数
     
     public ModelPrepareStart(GameState gameState, ConsoleView view) {
         this.gameState = gameState;
@@ -58,14 +58,14 @@ public class ModelPrepareStart {
     }
 
     private void processAlways() throws IOException, InterruptedException {
-        // 常に実行する処理をここに追加
-        // 例えば、ゲームの状態を更新するなど
-        // ここに常に実行する処理を追加
         view.setResetBackGroundColor(0);
 
-        if(10 < flameCount & flameCount < 30){
-            view.putString("企画者：　ｔ２３ｃｓ００７　榎尾　圭登",ConsoleView.WIDTH / 2 - 5, ConsoleView.HEIGHT / 2, 255, 0);
-            view.putString("開発者：　ｔ２３ｃｓ０１４　神田　智輝", ConsoleView.WIDTH / 2 - 5, ConsoleView.HEIGHT / 2 + 3, 255, 0);
-        }
-     }
+        if(flameCount < flameCountMax/2){
+            view.putString("企画者：　ｔ２３ｃｓ００７　榎尾　圭登", ConsoleView.WIDTH / 2 - 10, ConsoleView.HEIGHT / 2 - 1, 234+flameCount, 0);
+            view.putString("開発者：　ｔ２３ｃｓ０１４　神田　智輝", ConsoleView.WIDTH / 2 - 10, ConsoleView.HEIGHT / 2 + 1, 234+flameCount, 0);    
+        } else {
+            view.putString("企画者：　ｔ２３ｃｓ００７　榎尾　圭登", ConsoleView.WIDTH / 2 - 10, ConsoleView.HEIGHT / 2 - 1, 255 - (flameCount - flameCountMax/2), 0);
+            view.putString("開発者：　ｔ２３ｃｓ０１４　神田　智輝", ConsoleView.WIDTH / 2 - 10, ConsoleView.HEIGHT / 2 + 1, 255 - (flameCount - flameCountMax/2), 0);    
+        } 
+    }
 }

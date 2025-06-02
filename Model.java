@@ -38,8 +38,8 @@ public class Model {
 		this.modelStart = new ModelStart(view, gameState, gameDifficulty);
 		this.modelPlaying = new ModelPlaying(view, gameState, gameDifficulty, score);
 		this.modelPreparePlaying = new ModelPreparePlaying(gameState, this.modelPlaying, view);
-		this.modelWrite = new ModelWrite(score, gameState);
-		this.modelGameEnd = new ModelGameEnd(view, gameState, score);
+		this.modelWrite = new ModelWrite(score, gameState, gameDifficulty);
+		this.modelGameEnd = new ModelGameEnd(view, gameState, score, gameDifficulty);
 		// this.modelGameEnd = new ModelGameEnd(ConsoleView view, GameState gameState, Score score)
 		
 	}

@@ -49,11 +49,11 @@ public class ConsoleView{
 	
 	public boolean setColor(int x, int y, int charColor) {
 		if(x < 0 || x >= WIDTH) {
-			System.out.println("setColor: x is out of bounds: " + x);
+			// System.out.println("setColor: x is out of bounds: " + x);
 			return false;
 		}
 		if(y < 0 || y >= HEIGHT) {
-			System.out.println("setColor: y is out of bounds: " + y);
+			// System.out.println("setColor: y is out of bounds: " + y);
 			return false;
 		}
 	    if (charColor < 0 || charColor >= ConsoleColor.COLORMAXINDEX) {
@@ -85,11 +85,11 @@ public class ConsoleView{
 	
 	public void putChar(char c, int x, int y) {
 		if(x >= WIDTH || x < 0) {
-			System.out.println("putChar: x is out of bounds: " + x);
+			// System.out.println("putChar: x is out of bounds: " + x);
 			return ;
 		}
 		if(y >= HEIGHT || y < 0) {
-			System.out.println("putChar: y is out of bounds: " + y);
+			// System.out.println("putChar: y is out of bounds: " + y);
 			return ;
 		}
 		
@@ -170,8 +170,9 @@ public class ConsoleView{
 
 		for(int i = 0;i < HEIGHT;i++) {
 			for(int j = 0;j < WIDTH;j++) {
-				screen.setChar(j, i, targetMap.getChar(j, i));
-				screen.setColor(j, i, targetMap.getCharColor(j, i), map.getBackGroundColor(j, i));
+				this.screen.setChar(j, i, targetMap.getChar(j, i));
+				this.screen.setColor(j, i, targetMap.getCharColor(j, i), targetMap.getBackGroundColor(j, i));
+				// System.out.println("putGameMap: " + j + ", " + i + ": " + targetMap.getChar(j, i) + ", charColor: " + targetMap.getCharColor(j, i) + ", backGroundColor: " + targetMap.getBackGroundColor(j, i));
 			}
 		}
 		

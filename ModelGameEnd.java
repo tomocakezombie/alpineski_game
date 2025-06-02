@@ -11,6 +11,7 @@ public class ModelGameEnd {
     private MapData Logo2;
     private boolean isView = false;
     private Score score;
+    private GameDifficulty gameDifficulty;
     
     private int baseBackGroundColor;
     private GameState gameState;
@@ -19,7 +20,7 @@ public class ModelGameEnd {
     // 弾を保存するリスト
     private LinkedList<Bullet> bullets;
 
-    ModelGameEnd(ConsoleView view, GameState gameState, Score score) {
+    ModelGameEnd(ConsoleView view, GameState gameState, Score score, GameDifficulty gameDifficulty) {
         this.view = view;
         
         this.bullets = new LinkedList<Bullet>();
@@ -27,6 +28,7 @@ public class ModelGameEnd {
 
         this.score = score;
         
+        this.gameDifficulty = gameDifficulty;
 
         baseBackGroundColor = 111;    
         
@@ -80,7 +82,7 @@ public class ModelGameEnd {
         // キー入力処理
         if(event.equals("ENTER")){
             // ENTERキーが押されたときの処理
-            isView = true;
+            gameState.setNextState();
             return;
         }
         if(event.equals("SPACE")){
@@ -117,8 +119,17 @@ public class ModelGameEnd {
         view.setResetBackGroundColor(baseBackGroundColor);
 
         putBullets();
-        score.setPosition(ConsoleView.WIDTH / 2, ConsoleView.HEIGHT / 2);
-        score.setColor(0, baseBackGroundColor);
+
+        view.putString("ゲームリザルト", ConsoleView.WIDTH / 2 - 4, ConsoleView.HEIGHT / 2 - 4, 255, baseBackGroundColor);
+        view.putString("ゲーム難易度：", ConsoleView.WIDTH / 2 - 7, ConsoleView.HEIGHT / 2 - 2, 255, baseBackGroundColor);
+
+        gameDifficulty.setPosition(ConsoleView.WIDTH / 2, ConsoleView.HEIGHT / 2 - 2);
+        gameDifficulty.setColor(255, baseBackGroundColor);
+        gameDifficulty.put(view);
+
+        
+        score.setPosition(ConsoleView.WIDTH / 2 -2, ConsoleView.HEIGHT / 2);
+        score.setColor(255, baseBackGroundColor);
         score.put(view);
         
     }

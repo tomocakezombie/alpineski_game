@@ -1,22 +1,9 @@
-public class Score {
+public class Score extends Drawable{
     private int score;
-    private int charColor = 255; // 緑色
-    private int backGroundColor = 0; // 黒色
-    private int scoreX;
-    private int scoreY;
 
     public Score() {
+        super(0, 0, 0, 0);
         this.score = 0;
-    }
-
-    public void setColor(int charColor, int backGroundColor) {
-        this.charColor = charColor;
-        this.backGroundColor = backGroundColor;
-    }
-
-    public void setPosition(int x, int y) {
-        this.scoreX = x;
-        this.scoreY = y;
     }
 
     public void addScore(int points) {
@@ -34,6 +21,7 @@ public class Score {
         this.score = 0;
     }
 
+    
     public void put(GameMapView view) throws InterruptedException {
         String scoreString = "";
         int temp = score;
@@ -53,9 +41,12 @@ public class Score {
         scoreString += "ｍ";
 
         // view.putString(scoreString, ConsoleView.WIDTH - 10, 3, 1, 0);
-        view.putString(scoreString, scoreX, scoreY, charColor, backGroundColor);
+        // view.putString(scoreString, x, y, charColor, backGroundColor);
+        view.putString(scoreString, x, y, charColor);
+
     }
 
+    @Override
     public void put(ConsoleView view) throws InterruptedException {
         String scoreString = "";
         int temp = score;
@@ -75,6 +66,6 @@ public class Score {
         scoreString += "ｍ";
 
         // view.putString(scoreString, ConsoleView.WIDTH - 10, 3, 1, 0);
-        view.putString(scoreString, scoreX, scoreY, charColor, backGroundColor);
+        view.putString(scoreString, x, y, charColor, backGroundColor);
     }
 }
