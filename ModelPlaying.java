@@ -13,6 +13,7 @@ public class ModelPlaying {
     private ReadFile readfile;
     private int baseBackGroundColor;
     private GameState gameState;
+    private ConsoleController controller;
     
     private MapData skyMap;
 
@@ -50,6 +51,8 @@ public class ModelPlaying {
     // ゲームマップの内、プレイヤーのいけない所を設定
     private int grancePeriod;
 
+    // private int flameCount = 0;
+
     public void resetState(){
         // ゲームの状態をリセットする
         this.obstacles.clear();
@@ -63,9 +66,10 @@ public class ModelPlaying {
         successComment.resetGameComment();
         this.gameMapView.setResetBackGroundColor(baseBackGroundColor);
         this.score.resetScore();
+        this.controller.resetDelay();
     }
 
-    ModelPlaying(ConsoleView view, GameState gameState, GameDifficulty gameDifficulty, Score score) {
+    ModelPlaying(ConsoleView view, GameState gameState, GameDifficulty gameDifficulty, Score score, ConsoleController controller) {
         // コンストラクタ
         this.view = view;
         PlayingMapX = 10;
@@ -105,11 +109,11 @@ public class ModelPlaying {
         this.score.setColor(0, baseBackGroundColor);
         this.score.setPosition(startX, startY+1);
         
-        this.missObjComment = new GameComment("ミス！", INVINCIBLE_TIME_MAX);
+        this.missObjComment = new GameComment("ＭＩＳＳ！", INVINCIBLE_TIME_MAX);
         this.missObjComment.setColor(1, baseBackGroundColor);
         this.missFlagComment = new GameComment("旗を取り逃がした！", INVINCIBLE_TIME_MAX);
         this.missFlagComment.setColor(1, baseBackGroundColor);
-        this.successComment = new GameComment("成功！", INVINCIBLE_TIME_MAX);
+        this.successComment = new GameComment("ＮＩＣＥ！", INVINCIBLE_TIME_MAX);
         this.successComment.setColor(1, baseBackGroundColor);
 
         this.gameMapView = new GameMapView(player);
@@ -120,6 +124,7 @@ public class ModelPlaying {
         this.skyMap.clearCharColor(111);
         this.skyMap.clearBackground(111);
 
+        this.controller = controller;
     }
 
     public void updateObstacles() {
@@ -175,8 +180,6 @@ public class ModelPlaying {
     // 時間経過イベントの処理
     private void processTimeElapsed(){
 
-
-
         Random random = new Random();
         int randomValue = random.nextInt(obstacleFrequency - 1) + 1;
         for (int i = 0; i < randomValue; i++) {
@@ -202,8 +205,19 @@ public class ModelPlaying {
             obstacles.add(obstacle);
         }
 
+        // 旗の生成
         if(flame % intervalFlag == 0){
             generateFlag();
+        }
+
+        // エンドレス用の処理
+        if(gameDifficulty.getCurrentSelection() == GameDifficulty.ENDLRESS) {
+            // 15 フレーム事に画面更新速度を増加
+            if(flame != 0 && flame % 30 == 0) {
+                controller.setSubDelay();
+            }
+
+
         }
 
         updateObstacles();
@@ -311,12 +325,13 @@ public class ModelPlaying {
             successComment.resetViewFlame();
             obstacles.clear();
             flags.clear();
+            controller.resetDelay();
             return;
         }
 
         // 画面描画処理
 
-        
+
 
         int playerX = player.getPositionX();
         int playerY = player.getPositionY();
@@ -358,6 +373,14 @@ public class ModelPlaying {
         missObjComment.setPosition(player.getPositionX() + 1, player.getPositionY() - 1);
         missFlagComment.setPosition(player.getPositionX() + 1, player.getPositionY() - 1);
         successComment.setPosition(player.getPositionX() + 1, player.getPositionY() - 1);
+
+        // エンドレス限定処理
+        if(gameDifficulty.getCurrentSelection() == GameDifficulty.ENDLRESS && 
+            flame > 5 && 0 <= flame % 30 && 
+            flame % 30 < 5) {
+            gameMapView.putString("ＳＰＥＥＤＵＰ！", player.getPositionX() + 1, player.getPositionY() - 2, 4);
+            
+        }
         
 
         missObjComment.putComment(gameMapView);
