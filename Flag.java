@@ -6,6 +6,7 @@ public class Flag extends Drawable{
 
     public Flag(char c, char line, int positionX, int positionY, int lineLength, int color, int backGroundColor) {
         super(positionX, positionY, c, color, backGroundColor);
+        this.lineLength = lineLength;
         this.line = line;
     }
 

@@ -6,8 +6,10 @@ import java.io.*;
 public class ConsoleController implements ActionListener{
 	
 	private final static int DELAY = 100;
+	private final static int MIN_DELAY = 40; // 最小遅延時間
 	private Model model;
 	private Timer timer;
+	private int nowDelay = DELAY; // 現在の遅延時間
 	
 	public ConsoleController(Model m) {
 		model = m;
@@ -42,5 +44,20 @@ public class ConsoleController implements ActionListener{
 			System.err.println("InterruptedExceptionが発生しました: " + e2.getMessage());
 			e2.printStackTrace();
 		}
+	}
+	
+	public boolean setSubDelay() {
+		if(nowDelay <= MIN_DELAY) {
+			// System.out.println("これ以上遅延時間を短くできません。");
+			return false; // 遅延時間が最小値以下の場合は変更しない
+		}
+		nowDelay = nowDelay - 1;
+        timer.setDelay(nowDelay);
+		return true;
+    }
+
+	public void resetDelay() {
+		nowDelay = DELAY; // 遅延時間を初期値にリセット
+		timer.setDelay(nowDelay);
 	}
 }
