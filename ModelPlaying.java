@@ -52,6 +52,8 @@ public class ModelPlaying {
     // ゲームマップの内、プレイヤーのいけない所を設定
     private int grancePeriod;
 
+    private MapData dangerMap;
+
     // private int flameCount = 0;
 
     // 雪崩を管理するクラス
@@ -71,6 +73,8 @@ public class ModelPlaying {
         this.gameMapView.setResetBackGroundColor(baseBackGroundColor);
         this.score.resetScore();
         this.controller.resetDelay();
+        this.avalancheObstacles.clear();
+        this.avalanche.reset();
     }
 
     ModelPlaying(ConsoleView view, GameState gameState, GameDifficulty gameDifficulty, Score score, ConsoleController controller) {
@@ -86,7 +90,7 @@ public class ModelPlaying {
         this.grancePeriod = 40;
         this.gameDifficulty = gameDifficulty;
         baseBackGroundColor = 15;                                   
-        this.player = new Player(10, GameMapView.WIDTH / 2, GameMapView.HEIGHT / 2, '＠', grancePeriod, grancePeriod/4, GameMapView.WIDTH-grancePeriod, 31);
+        this.player = new Player(10, GameMapView.WIDTH / 2, GameMapView.HEIGHT / 2, '＠', grancePeriod, grancePeriod/4+1, GameMapView.WIDTH-grancePeriod, 31);
         this.player.setplayerCharColor(1);
         this.player.setPlayerBackGroundColor(baseBackGroundColor);
         this.player.setHitpointBackGroundColor(baseBackGroundColor);
@@ -136,6 +140,10 @@ public class ModelPlaying {
         this.avalanche.setWidth(30);
         this.avalanche.setBackgroundColor(baseBackGroundColor);
 
+        ReadFile readFileDanger = new ReadFile("./ReadFiles/DANGER.txt");
+        readFileDanger.setBasicColor(baseBackGroundColor);
+        readFileDanger.setColor('＝', 0, baseBackGroundColor);
+        this.dangerMap = readFileDanger.getMapData();
         
     }
 
@@ -439,22 +447,31 @@ public class ModelPlaying {
         successComment.setPosition(player.getPositionX() + 1, player.getPositionY() - 1);
 
         // エンドレス限定処理
-        if(gameDifficulty.getCurrentSelection() == GameDifficulty.ENDLRESS && 
-            flame > 5 && 0 <= flame % 30 && 
-            flame % 30 < 5) {
-            gameMapView.putString("ＳＰＥＥＤＵＰ！", player.getPositionX() + 1, player.getPositionY() - 2, 4);
-            
-        }
+        if(gameDifficulty.getCurrentSelection() == GameDifficulty.ENDLRESS){
+            // スピードアップ処理
+            if(flame > 5 && 0 <= flame % 30 && flame % 30 < 5){
+                gameMapView.putString("ＳＰＥＥＤＵＰ！", player.getPositionX() + 1, player.getPositionY() - 2, 4);
+            }
+
+            if(avalanche.isDangerous()){
+                gameMapView.putString("雪崩が発生しました！", player.getPositionX() + 1, player.getPositionY() - 2, 4);
+                if(avalanche.isPlaceLeft()){
+                    gameMapView.putString("左", player.getPositionX()+1, player.getPositionY() - 3, 1);
+                } else {
+                    gameMapView.putString("右", player.getPositionX()+1, player.getPositionY() - 3, 1);
+                }
+                gameMapView.putString("側に雪崩が発生！", player.getPositionX() + 2, player.getPositionY() - 3, 4);
+            }
+     
+        } 
+
         
 
         missObjComment.putComment(gameMapView);
         missFlagComment.putComment(gameMapView);
         successComment.putComment(gameMapView);
 
-        if(avalanche.isDangerous()){
-            // System.out.println("雪崩が発生しました！");
-            gameMapView.putString("雪崩が発生しました！", player.getPositionX() + 1, player.getPositionY() - 2, 4);
-        }
+
 
         // ConsoleViewに描画
         gameMapView.putConsoleView(view);

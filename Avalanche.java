@@ -8,7 +8,7 @@ public class Avalanche {
     private boolean isAvalanching = false; // 雪崩が起きているかどうか
     private boolean isDangerous = false; // 雪崩の前兆フラグ
     private int dangerTime;
-    private int dangerMaxTime = 30; // 雪崩の前兆が続く最大フレーム数
+    private int dangerMaxTime = 60; // 雪崩の前兆が続く最大フレーム数
     private LinkedList<Obstacle> obstacles;
     private int minX;
     private int maxX;
@@ -17,7 +17,7 @@ public class Avalanche {
     private boolean placeLeft;
 
     // 雪崩が発生している最大フレーム数
-    private int maxTime = 50;
+    private int maxTime = 90;
     // 雪崩中のフレーム
     private int time;
 
@@ -141,5 +141,14 @@ public class Avalanche {
 
     public boolean isAvalanching() {
         return isAvalanching;
+    }
+
+    public void reset(){
+        isAvalanching = false;
+        isDangerous = false;
+        dangerTime = 0;
+        time = 0;
+        obstacles.clear();
+        placeLeft = random.nextDouble() <= 0.5; // 初期状態で左側に雪崩が起きるかどうか
     }
 }
