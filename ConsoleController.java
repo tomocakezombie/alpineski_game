@@ -23,11 +23,11 @@ public class ConsoleController implements ActionListener{
 		String line = null;
 		while ( (line = reader.readLine() ) != null) {
 			if (line.isEmpty()) {
-				System.out.println("エンターキーが押されました");
+				// System.out.println("エンターキーが押されました");
 				line = "ENTER";
 			}
 			if (line.trim().isEmpty()) {
-				System.out.println("スペースのみが入力されました");
+				// System.out.println("スペースのみが入力されました");
 				line = "SPACE";
 			}
 			model.process(line);

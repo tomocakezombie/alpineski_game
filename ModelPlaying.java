@@ -32,6 +32,7 @@ public class ModelPlaying {
 
     // 障害物を保存するリスト
     private LinkedList<Obstacle> obstacles;
+    private LinkedList<Obstacle> avalancheObstacles;
 
     // 旗を保存するリスト
     private LinkedList<Flag> flags;
@@ -52,6 +53,9 @@ public class ModelPlaying {
     private int grancePeriod;
 
     // private int flameCount = 0;
+
+    // 雪崩を管理するクラス
+    private Avalanche avalanche;
 
     public void resetState(){
         // ゲームの状態をリセットする
@@ -82,7 +86,7 @@ public class ModelPlaying {
         this.grancePeriod = 40;
         this.gameDifficulty = gameDifficulty;
         baseBackGroundColor = 15;                                   
-        this.player = new Player(3, GameMapView.WIDTH / 2, GameMapView.HEIGHT / 2, '＠', grancePeriod, grancePeriod/4, GameMapView.WIDTH-grancePeriod, 31);
+        this.player = new Player(10, GameMapView.WIDTH / 2, GameMapView.HEIGHT / 2, '＠', grancePeriod, grancePeriod/4, GameMapView.WIDTH-grancePeriod, 31);
         this.player.setplayerCharColor(1);
         this.player.setPlayerBackGroundColor(baseBackGroundColor);
         this.player.setHitpointBackGroundColor(baseBackGroundColor);
@@ -125,6 +129,14 @@ public class ModelPlaying {
         this.skyMap.clearBackground(111);
 
         this.controller = controller;
+
+        this.avalancheObstacles = new LinkedList<Obstacle>();
+        this.avalanche = new Avalanche(0.01, avalancheObstacles);
+        this.avalanche.setMinMax(grancePeriod, GameMapView.WIDTH - grancePeriod);
+        this.avalanche.setWidth(30);
+        this.avalanche.setBackgroundColor(baseBackGroundColor);
+
+        
     }
 
     public void updateObstacles() {
@@ -134,6 +146,31 @@ public class ModelPlaying {
                 i.remove();
             } else {
                 obstacle.update();
+            }
+        }
+    }
+
+    public void updateAvalancheObstacles() {
+        for(Iterator<Obstacle> i = avalancheObstacles.iterator();i.hasNext();) {
+            Obstacle obstacle = i.next();
+            if(!obstacle.isActive()) {
+                i.remove();
+            } else {
+                obstacle.update();
+                
+                // 旗が雪崩に巻き込まれた場合、旗を消す
+                for(Iterator<Flag> j = flags.iterator(); j.hasNext();) {
+                    Flag flag = j.next();
+                    if(
+                        flag.getPositionX() <= obstacle.getPositionX() &&
+                        obstacle.getPositionX() <= flag.getPositionX() + flag.getLineLength() + 1 &&
+                        obstacle.getPositionY() == flag.getPositionY()
+                        )
+                        {
+                        j.remove();
+                        }
+
+                }
             }
         }
     }
@@ -151,6 +188,13 @@ public class ModelPlaying {
     
     public void putObstacles() throws InterruptedException {
         for(Iterator<Obstacle> i = obstacles.iterator();i.hasNext();) {
+            Obstacle obstacle = i.next();
+            obstacle.put(gameMapView);
+        }
+    }
+
+    public void putAvalancheObstacles() throws InterruptedException {
+        for(Iterator<Obstacle> i = avalancheObstacles.iterator();i.hasNext();) {
             Obstacle obstacle = i.next();
             obstacle.put(gameMapView);
         }
@@ -217,10 +261,12 @@ public class ModelPlaying {
                 controller.setSubDelay();
             }
 
-
+            // 雪崩の発生をさせるかも
+            avalanche.runAvalanche();
         }
 
         updateObstacles();
+        updateAvalancheObstacles();
         updateFlags();
         flame++;
         score.addScore(1);
@@ -230,22 +276,41 @@ public class ModelPlaying {
     }
 
     private void generateFlag() {
-        Random random = new Random();
-        int randomX = grancePeriod + random.nextInt(GameMapView.WIDTH/4);
-        Flag flag = new Flag('Ｆ', 'ー', randomX, GameMapView.HEIGHT-1 , 10, 1, baseBackGroundColor);
-        flags.add(flag);
+
+        if(avalanche.isHappenAvalanche()){
+            if(avalanche.isPlaceLeft()) {
+                // 雪崩が左側に発生する場合
+                Random random = new Random();
+                random.nextInt();
+                Flag flag = new Flag('Ｆ', 'ー', avalanche.getMinX() + random.nextInt(40 - 20) + 20 , GameMapView.HEIGHT-1 , 10, 1, baseBackGroundColor);
+                flags.add(flag);
+            } else {
+                // 雪崩が右側に発生する場合
+                Random random = new Random();
+                random.nextInt();
+                Flag flag = new Flag('Ｆ', 'ー', avalanche.getMaxX() - random.nextInt(40 - 20) + 20 , GameMapView.HEIGHT-1 , 10, 1, baseBackGroundColor);
+                flags.add(flag);
+            }
+        } else {
+            Random random = new Random();
+            int randomX = grancePeriod + random.nextInt(GameMapView.WIDTH/4);
+            Flag flag = new Flag('Ｆ', 'ー', randomX, GameMapView.HEIGHT-1 , 10, 1, baseBackGroundColor);
+            flags.add(flag);
+        }
 
         // 旗の位置を障害物の位置と重ならないように調整
         for(Iterator <Obstacle> i = obstacles.iterator(); i.hasNext();) {
             Obstacle obstacle = i.next();
-            if( flag.getPositionX() <= obstacle.getPositionX() && 
-                obstacle.getPositionX() <= flag.getPositionX() + flag.getLineLength()+1 &&
-                flag.getPositionY() == obstacle.getPositionY()
-            ) {
-                // 旗と障害物が重なった場合は削除
-                i.remove();
+            for(Flag flag: flags){
+                if(flag.getPositionX() <= obstacle.getPositionX() &&
+                 obstacle.getPositionX() <= flag.getPositionX() + flag.getLineLength() + 1 &&
+                 obstacle.getPositionY() == flag.getPositionY()){
+                    i.remove();
+                 }
             }
         }
+
+
     }
 
     private void processKeyInput(String event) throws InterruptedException {
@@ -331,8 +396,6 @@ public class ModelPlaying {
 
         // 画面描画処理
 
-
-
         int playerX = player.getPositionX();
         int playerY = player.getPositionY();
 
@@ -352,6 +415,7 @@ public class ModelPlaying {
         
         putFlags();
         putObstacles();
+        putAvalancheObstacles();
         
         gameMapView.putMap(0, 0, skyMap); // 空のマップを描画 なぜかばぐる
         gameMapView.putMap(gameMapView.WIDTH - grancePeriod, 0, skyMap); // プレイ中のマップを描画
@@ -387,8 +451,16 @@ public class ModelPlaying {
         missFlagComment.putComment(gameMapView);
         successComment.putComment(gameMapView);
 
+        if(avalanche.isDangerous()){
+            // System.out.println("雪崩が発生しました！");
+            gameMapView.putString("雪崩が発生しました！", player.getPositionX() + 1, player.getPositionY() - 2, 4);
+        }
+
         // ConsoleViewに描画
         gameMapView.putConsoleView(view);
+
+        System.out.println("time:"+avalanche.getTime());
+
         
     }
 
@@ -403,7 +475,18 @@ public class ModelPlaying {
             int obstaclePositionY = obstacle.getPositionY();
             if(obstaclePositionX == player.getPositionX() && obstaclePositionY == player.getPositionY()) {
                 // プレイヤーに弾が当たった場合の処理
-                player.damage();
+                player.damage(obstacle.getAttackPower());
+                invincibleTime = INVINCIBLE_TIME_MAX; // 無敵時間を設定
+                missObjComment.resetViewFlame();
+            }
+        }
+
+        for(Obstacle obstacle: avalancheObstacles){
+            int obstaclePositionX = obstacle.getPositionX();
+            int obstaclePositionY = obstacle.getPositionY();
+            if(obstaclePositionX == player.getPositionX() && obstaclePositionY == player.getPositionY()) {
+                // プレイヤーに雪崩の障害物が当たった場合の処理
+                player.damage(obstacle.getAttackPower());
                 invincibleTime = INVINCIBLE_TIME_MAX; // 無敵時間を設定
                 missObjComment.resetViewFlame();
             }
