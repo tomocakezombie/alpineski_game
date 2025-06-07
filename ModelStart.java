@@ -287,7 +287,9 @@ public class ModelStart {
         };
         String[] titles = { "NORMAL", "HARD", "ENDLESS" };
 
+        int baseX = ConsoleView.WIDTH / 6; // 横並びの基準位置
         int sectionY = ConsoleView.HEIGHT / 4 - 5;
+
         for (int i = 0; i < files.length; i++) {
             List<String> lines = Files.readAllLines(Path.of(files[i]));
             List<Integer> scores = new ArrayList<>();
@@ -301,20 +303,20 @@ public class ModelStart {
             }
             Collections.sort(scores, Collections.reverseOrder());
 
-            // タイトル表示
-            view.putString("ランキング（" + ChangeChar.toZenkaku(titles[i]) + "）", ConsoleView.WIDTH / 2 - 8, sectionY, 15, baseBackGroundColor);
+            // タイトル表示（横にずらす）
+            int x = baseX + i * (ConsoleView.WIDTH / 3);
+            view.putString("ランキング（" + ChangeChar.toZenkaku(titles[i]) + "）", x, sectionY, 15, baseBackGroundColor);
 
-            // スコア表示
+            // スコア表示（縦に並べる）
             int rank = 1;
             for (int score : scores) {
-                view.putString(ChangeChar.toZenkaku(String.valueOf(rank)) + "位：" + ChangeChar.toZenkaku(String.valueOf(score)), ConsoleView.WIDTH / 2 - 8, sectionY + rank, 15, baseBackGroundColor);
+                view.putString(ChangeChar.toZenkaku(String.valueOf(rank)) + "位：" + ChangeChar.toZenkaku(String.valueOf(score)), x, sectionY + rank, 15, baseBackGroundColor);
                 rank++;
                 if (rank > 10) break;
             }
-            sectionY += 12; // 次の難易度の表示位置をずらす
         }
 
-        view.putString("ランキングを確認したらＥＮＴＥＲキーを押してください", ConsoleView.WIDTH / 2 - 20, sectionY, 15, baseBackGroundColor);
+        view.putString("ランキングを確認したらＥＮＴＥＲキーを押してください", ConsoleView.WIDTH / 2 - 10, sectionY + 20, 15, baseBackGroundColor);
     }
     
 }

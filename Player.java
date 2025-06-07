@@ -15,7 +15,7 @@ public class Player {
     private int minPositionY;
 
 
-    private char hitpointChar = '＄';
+    private char hitpointChar = '＠';
     private int hitpointCharColor = 1;
     private int hitpointBackGroundColor = 0;
 

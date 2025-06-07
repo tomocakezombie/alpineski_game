@@ -90,7 +90,7 @@ public class ModelPlaying {
         this.grancePeriod = 40;
         this.gameDifficulty = gameDifficulty;
         baseBackGroundColor = 15;                                   
-        this.player = new Player(10, GameMapView.WIDTH / 2, GameMapView.HEIGHT / 2, '＠', grancePeriod, grancePeriod/4+1, GameMapView.WIDTH-grancePeriod, 31);
+        this.player = new Player(3, GameMapView.WIDTH / 2, GameMapView.HEIGHT / 2, '＠', grancePeriod, grancePeriod/4+1, GameMapView.WIDTH-grancePeriod, 31);
         this.player.setplayerCharColor(1);
         this.player.setPlayerBackGroundColor(baseBackGroundColor);
         this.player.setHitpointBackGroundColor(baseBackGroundColor);
@@ -135,7 +135,7 @@ public class ModelPlaying {
         this.controller = controller;
 
         this.avalancheObstacles = new LinkedList<Obstacle>();
-        this.avalanche = new Avalanche(0.01, avalancheObstacles);
+        this.avalanche = new Avalanche(0.005, avalancheObstacles);
         this.avalanche.setMinMax(grancePeriod, GameMapView.WIDTH - grancePeriod);
         this.avalanche.setWidth(30);
         this.avalanche.setBackgroundColor(baseBackGroundColor);
@@ -269,6 +269,12 @@ public class ModelPlaying {
                 controller.setSubDelay();
             }
 
+            if(flame == 500){
+                intervalFlag = 30;
+                obstacleFrequency = 5;
+                
+            }
+
             // 雪崩の発生をさせるかも
             avalanche.runAvalanche();
         }
@@ -373,7 +379,7 @@ public class ModelPlaying {
                 obstacleFrequency = 8;
                 break;
             case GameDifficulty.ENDLRESS: // Endless
-                intervalFlag = 25;
+                intervalFlag = 30;
                 obstacleFrequency = 5;
                 break;
             default:
