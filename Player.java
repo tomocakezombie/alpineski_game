@@ -15,7 +15,7 @@ public class Player {
     private int minPositionY;
 
 
-    private char hitpointChar = '＄';
+    private char hitpointChar = '＠';
     private int hitpointCharColor = 1;
     private int hitpointBackGroundColor = 0;
 
@@ -89,7 +89,7 @@ public class Player {
         }
     }
     public void subX() {
-        System.out.println("positionX: " + positionX + ", minPositionX: " + minPositionX);
+        // System.out.println("positionX: " + positionX + ", minPositionX: " + minPositionX);
         if (positionX > minPositionX) {
             positionX--;
         }
@@ -102,6 +102,10 @@ public class Player {
 
     public void damage() {
         hitpoint = Math.max(hitpoint - 1, 0);
+    }
+
+    public void damage(int damageAmount) {
+        hitpoint = Math.max(hitpoint - damageAmount, 0);
     }
 
     public void heal() {
