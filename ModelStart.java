@@ -78,7 +78,7 @@ public class ModelStart {
         MountainY = 20;
 
         String[] userSelectString = new String[]{
-            "ゲーム開始",
+            "モード選択",
             "ルール確認",
             "ランキング",
             "ゲーム終了"
@@ -122,7 +122,7 @@ public class ModelStart {
     
     private void processTimeElapsed(){
         updateBullets();
-        Logo2X = Math.max(Logo2X - 5, Logo1X);
+        Logo2X = Math.max(Logo2X - 10, Logo1X);
         
         Random random = new Random();
         // 例: 1からobstacleFrequency未満の乱数
@@ -218,9 +218,9 @@ public class ModelStart {
 
         if(isUserEnterDifficulty){
             // 難易度選択中の場合
-            view.putString("難易度選択画面", ConsoleView.WIDTH / 2 - 3, ConsoleView.HEIGHT / 4-5, 15, baseBackGroundColor);
-            view.putString("難易度を変更するには左右キーを押してください", ConsoleView.WIDTH / 4 +10, ConsoleView.HEIGHT / 4 + 1, 15, baseBackGroundColor);
-            view.putString("現在の難易度: " + gameDifficulty.getCurrentSelection(), ConsoleView.WIDTH / 2-5, ConsoleView.HEIGHT / 4 + 2, 15, baseBackGroundColor);
+            view.putString("モード選択画面", ConsoleView.WIDTH / 2 - 5, ConsoleView.HEIGHT / 4-5, 15, baseBackGroundColor);
+            view.putString("左右キーで難易度変更、ＥＮＴＥＲキーでゲームを開始できます", ConsoleView.WIDTH / 4 +5, ConsoleView.HEIGHT / 4 + 1, 15, baseBackGroundColor);
+            view.putString("現在のモード: " + gameDifficulty.getCurrentSelection(), ConsoleView.WIDTH / 2-5, ConsoleView.HEIGHT / 4 + 2, 15, baseBackGroundColor);
 
             for(int i = 0; i < gameDifficulty.getOptions().length; i++) {
                 if(i == gameDifficulty.getCurrentIndex()) {
@@ -261,7 +261,7 @@ public class ModelStart {
         putBullets();
         view.setResetBackGroundColor(baseBackGroundColor);
         putUserSelect();
-        return ;
+        return;
         
     }
 
