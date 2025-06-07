@@ -34,4 +34,11 @@ public class GameState {
     public int getState() {
         return this.state;
     }
+
+    public void setState(int state) {
+        if (state < PREPARESTART || state >= MAXSTATE) {
+            throw new IllegalArgumentException("Invalid state: " + state);
+        }
+        this.state = state;
+    }
 }

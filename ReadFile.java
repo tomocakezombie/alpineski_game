@@ -12,7 +12,7 @@ public class ReadFile {
     private final String fileNameMap;
     private final MapData mapData;
     private ConsoleColor consoleColor;
-    private int basicColor = 0;
+    private int basicColor = 255;
 
     private static final Map<String, String> charMap = new HashMap<>();
     private static final Map<String, Integer> charColorMap = new HashMap<>();

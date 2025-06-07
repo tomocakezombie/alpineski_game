@@ -96,7 +96,7 @@ public class MapData {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 this.map[i][j] = '　';
-                this.mapCharColor[i][j] = ConsoleColor.COLORMAXINDEX-1;
+                this.mapCharColor[i][j] = ConsoleColor.COLORMAXINDEX;
                 this.mapBackGroundColor[i][j] = 0;
             }
         }
