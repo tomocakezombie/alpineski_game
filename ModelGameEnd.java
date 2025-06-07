@@ -16,6 +16,8 @@ public class ModelGameEnd {
     private int baseBackGroundColor;
     private GameState gameState;
 
+    private Select userSelect;
+
 
     // 弾を保存するリスト
     private LinkedList<Bullet> bullets;
@@ -31,6 +33,12 @@ public class ModelGameEnd {
         this.gameDifficulty = gameDifficulty;
 
         baseBackGroundColor = 111;    
+
+        String[] userSelectString = new String[]{
+            "リトライ",
+            "タイトルへ戻る",
+        };
+        userSelect = new Select(userSelectString);
         
     }
 
@@ -80,24 +88,30 @@ public class ModelGameEnd {
 
         // System.out.println("event: " + event);
         // キー入力処理
-        if(event.equals("ENTER")){
+        if(event.equals("ENTER") || event.equals("SPACE")){
             // ENTERキーが押されたときの処理
-            gameState.setNextState();
-            return;
-        }
-        if(event.equals("SPACE")){
-            // スペースキーが押されたときの処理
-            gameState.setNextState();
-            // System.out.println("ゲームを元に戻します");
+            if(userSelect.getCurrentIndex() == 0){
+                // リトライを選択した場合
+                gameState.setState(GameState.PREPAREPLAYING);
+            } else if(userSelect.getCurrentIndex() == 1){
+                // タイトルへ戻るを選択した場合
+                gameState.setNextState();
+            }
+
+            userSelect.reset();
+
             return;
         }
 
-        if(event.equals("UP")){
+
+        if(event.equals("UP") || event.equals("w")){
             // 上矢印キーが押されたときの処理
+            userSelect.previous();
             return;
         }
-        if(event.equals("DOWN")){
+        if(event.equals("DOWN") || event.equals("s")){
             // 下矢印キーが押されたときの処理
+            userSelect.next();
             return;
         }
         if(event.equals("LEFT")){
@@ -120,19 +134,36 @@ public class ModelGameEnd {
 
         putBullets();
 
-        view.putString("ゲームリザルト", ConsoleView.WIDTH / 2 - 4, ConsoleView.HEIGHT / 2 - 4, 255, baseBackGroundColor);
-        view.putString("ゲーム難易度：", ConsoleView.WIDTH / 2 - 7, ConsoleView.HEIGHT / 2 - 2, 255, baseBackGroundColor);
+        view.putString("スコア", ConsoleView.WIDTH / 2 - 3, ConsoleView.HEIGHT / 2 - 5, 255, baseBackGroundColor);
+        view.putString("ゲーム難易度：", ConsoleView.WIDTH / 2 - 8, ConsoleView.HEIGHT / 2 - 2, 255, baseBackGroundColor);
 
-        gameDifficulty.setPosition(ConsoleView.WIDTH / 2, ConsoleView.HEIGHT / 2 - 2);
+        gameDifficulty.setPosition(ConsoleView.WIDTH / 2 - 1, ConsoleView.HEIGHT / 2 - 2);
         gameDifficulty.setColor(255, baseBackGroundColor);
         gameDifficulty.put(view);
 
-        
-        score.setPosition(ConsoleView.WIDTH / 2 -2, ConsoleView.HEIGHT / 2);
+        score.setPosition(ConsoleView.WIDTH / 2 - 3, ConsoleView.HEIGHT / 2);
         score.setColor(255, baseBackGroundColor);
         score.put(view);
+
+        putUserSelect();
         
     }
+
+    
+    private void putUserSelect() throws InterruptedException {
+        int count = 0;
+        for(String str : userSelect.getOptions()) {
+            if(count == userSelect.getCurrentIndex()) {
+                // 選択中の項目は色を変える
+                view.putString(str, ConsoleView.WIDTH / 2 - str.length() / 2 - 1, 22 + count*2, 1, baseBackGroundColor);
+            } else {
+                view.putString(str, ConsoleView.WIDTH / 2 - str.length() / 2 - 1, 22 + count*2, 15, baseBackGroundColor);
+            }
+            // view.putString(str, ConsoleView.WIDTH / 2 - 5, 25 + count*2, 15, baseBackGroundColor);
+            count++;
+        }
+    }
+
 
     
 
