@@ -90,7 +90,7 @@ public class ModelPlaying {
         this.grancePeriod = 40;
         this.gameDifficulty = gameDifficulty;
         baseBackGroundColor = 15;                                   
-        this.player = new Player(3, GameMapView.WIDTH / 2, GameMapView.HEIGHT / 2, '＠', grancePeriod, grancePeriod/4+1, GameMapView.WIDTH-grancePeriod, 31);
+        this.player = new Player(3, GameMapView.WIDTH / 2, grancePeriod/4+1, '＠', grancePeriod, grancePeriod/4+1, GameMapView.WIDTH-grancePeriod, 31);
         this.player.setplayerCharColor(1);
         this.player.setPlayerBackGroundColor(baseBackGroundColor);
         this.player.setHitpointBackGroundColor(baseBackGroundColor);
@@ -122,7 +122,7 @@ public class ModelPlaying {
         this.missFlagComment = new GameComment("旗を取り逃がした！", INVINCIBLE_TIME_MAX);
         this.missFlagComment.setColor(1, baseBackGroundColor);
         this.successComment = new GameComment("ＮＩＣＥ！", INVINCIBLE_TIME_MAX);
-        this.successComment.setColor(1, baseBackGroundColor);
+        this.successComment.setColor(4, baseBackGroundColor);
 
         this.gameMapView = new GameMapView(player);
         this.gameMapView.setResetBackGroundColor(baseBackGroundColor);
