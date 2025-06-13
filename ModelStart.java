@@ -1,3 +1,4 @@
+import java.io.Console;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,6 +15,7 @@ public class ModelStart {
     private MapData Logo1;
     private MapData Logo2;
     private MapData Mountain;
+    private MapData Description;
     private boolean isView = false;
     private GameDifficulty gameDifficulty;
     
@@ -27,12 +29,17 @@ public class ModelStart {
     private int Logo2X;
     private int Logo2Y;
 
+    private int DescriptionX;
+    private int DescriptionY;
+
     // 山の位置情報
     private int MountainX;
     private int MountainY;
 
     // 弾を保存するリスト
     private LinkedList<Bullet> bullets;
+
+    private String yajirushi = "＞";
 
     // ユーザの入力を待つための変数
     private Select userSelect;
@@ -41,6 +48,7 @@ public class ModelStart {
     private boolean isUserEnterDescriptin = false;
     private boolean isUserEnterRanking = false;
     private boolean isUserEnterDifficulty = false;
+    private int flame = 0; // 時間経過を管理するための変数
 
 
     ModelStart(ConsoleView view, GameState gameState, GameDifficulty gameDifficulty) {
@@ -76,6 +84,16 @@ public class ModelStart {
         Mountain = readfileMountain.getMapData();
         MountainX = 52;
         MountainY = 20;
+
+        ReadFile readfileDescription = new ReadFile("./ReadFiles/DESCRIPTION.txt");
+        readfileDescription.setBasicColor(baseBackGroundColor);
+        // readfileDescription.setColor('〇', 0, baseBackGroundColor);
+        Description = readfileDescription.getMapData();
+
+        DescriptionX = ConsoleView.WIDTH / 2 - Description.getWidth() / 2;
+        DescriptionY = 4;
+
+        
 
         String[] userSelectString = new String[]{
             "モード選択",
@@ -131,6 +149,8 @@ public class ModelStart {
         Bullet bulletTest = new Bullet('＊', randomValue, 0, 1, 1, 254, baseBackGroundColor);
         // Bullet bulletTest = new Bullet('＊', randomValue, 0, 1, 1, 254, 1);
         bullets.add(bulletTest);
+
+        flame++;
     }
 
     private void processKeyInput(String event) {
@@ -237,14 +257,20 @@ public class ModelStart {
         }
 
         if(isUserEnterDescriptin){
-            view.putString("ルール確認画面", ConsoleView.WIDTH / 2 - 3, ConsoleView.HEIGHT / 4-5, 15, baseBackGroundColor);
-            view.putString("このゲームは矢印キーまたはＷＡＳＤキーで操作します", ConsoleView.WIDTH / 2 - 20, ConsoleView.HEIGHT / 4 + 2, 15, baseBackGroundColor);
-            view.putString("矢印キーでプレイヤーを移動させ、", ConsoleView.WIDTH / 2 - 20, ConsoleView.HEIGHT / 4 + 3, 15, baseBackGroundColor);
-            view.putString("旗の間を通っていきます。", ConsoleView.WIDTH / 2 - 20, ConsoleView.HEIGHT / 4 + 4, 15, baseBackGroundColor);
-            view.putString("旗の間を通らないとダメージを受けます。", ConsoleView.WIDTH / 2 - 20, ConsoleView.HEIGHT / 4 + 5, 15, baseBackGroundColor);
-            view.putString("障害物にぶつかるとダメージを受けます。", ConsoleView.WIDTH / 2 - 20, ConsoleView.HEIGHT / 4 + 6, 15, baseBackGroundColor);
-            view.putString("３回ミスするとゲームオーバーです。", ConsoleView.WIDTH / 2 - 20, ConsoleView.HEIGHT / 4 + 7, 15, baseBackGroundColor);
-            view.putString("ルールを確認したらＥＮＴＥＲキーを押してください", ConsoleView.WIDTH / 2 - 20, ConsoleView.HEIGHT / 4 + 1, 15, baseBackGroundColor);
+            // Enter押せの描画
+            if(flame % 8 <= 1){
+                view.putString(yajirushi, ConsoleView.WIDTH / 2 - 9, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
+            } else if(flame % 8 <= 4){
+                view.putString(yajirushi, ConsoleView.WIDTH / 2 - 8, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
+            }  else if(flame % 8 <= 6){
+                view.putString(yajirushi, ConsoleView.WIDTH / 2 - 7, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
+            } else {
+                view.putString(yajirushi, ConsoleView.WIDTH / 2 - 6, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
+            }
+            view.putString("ＥＮＴＥＲキーで戻る", ConsoleView.WIDTH / 2 - 5, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
+
+            // 説明の描画
+            view.putMap(DescriptionX, DescriptionY, Description);
             return;
         }
 
@@ -252,6 +278,17 @@ public class ModelStart {
             // ランキング確認中の場合
             view.putString("ランキング画面", ConsoleView.WIDTH / 2 - 3, ConsoleView.HEIGHT / 4-5, 15, baseBackGroundColor);
             showRanking();
+            if(flame % 8 <= 1){
+                view.putString(yajirushi, ConsoleView.WIDTH / 2 - 9, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
+            } else if(flame % 8 <= 4){
+                view.putString(yajirushi, ConsoleView.WIDTH / 2 - 8, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
+            }  else if(flame % 8 <= 6){
+                view.putString(yajirushi, ConsoleView.WIDTH / 2 - 7, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
+            } else {
+                view.putString(yajirushi, ConsoleView.WIDTH / 2 - 6, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
+            }
+            view.putString("ＥＮＴＥＲキーで戻る", ConsoleView.WIDTH / 2 - 5, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
+
             return;
         }
 
@@ -316,7 +353,6 @@ public class ModelStart {
             }
         }
 
-        view.putString("ランキングを確認したらＥＮＴＥＲキーを押してください", ConsoleView.WIDTH / 2 - 10, sectionY + 20, 15, baseBackGroundColor);
     }
     
 }

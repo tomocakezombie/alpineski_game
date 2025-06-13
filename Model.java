@@ -42,7 +42,6 @@ public class Model {
 
 		this.modelWrite = new ModelWrite(score, gameState, gameDifficulty);
 		this.modelGameEnd = new ModelGameEnd(view, gameState, score, gameDifficulty);
-		// this.modelGameEnd = new ModelGameEnd(ConsoleView view, GameState gameState, Score score)
 		
 	}
 	
@@ -73,7 +72,6 @@ public class Model {
 
 		// 実際に描画
 		view.update();	
-		// System.out.println(gameState.getState());
 	}
 	
 	public void run() throws IOException, InterruptedException{
