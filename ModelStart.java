@@ -14,6 +14,7 @@ public class ModelStart {
     private MapData Logo1;
     private MapData Logo2;
     private MapData Mountain;
+    private MapData Description;
     private boolean isView = false;
     private GameDifficulty gameDifficulty;
     
@@ -26,6 +27,9 @@ public class ModelStart {
 
     private int Logo2X;
     private int Logo2Y;
+
+    private int DescriptionX;
+    private int DescriptionY;
 
     // 山の位置情報
     private int MountainX;
@@ -76,6 +80,8 @@ public class ModelStart {
         Mountain = readfileMountain.getMapData();
         MountainX = 52;
         MountainY = 20;
+
+        ReadFile readfileDesc
 
         String[] userSelectString = new String[]{
             "モード選択",
