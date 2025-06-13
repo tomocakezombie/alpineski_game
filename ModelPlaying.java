@@ -460,7 +460,7 @@ public class ModelPlaying {
             }
 
             if(avalanche.isDangerous()){
-                gameMapView.putString("雪崩が発生しました！", player.getPositionX() + 1, player.getPositionY() - 2, 4);
+                gameMapView.putString("気を付けろ！", player.getPositionX() + 1, player.getPositionY() - 2, 4);
                 if(avalanche.isPlaceLeft()){
                     gameMapView.putString("左", player.getPositionX()+1, player.getPositionY() - 3, 1);
                 } else {
