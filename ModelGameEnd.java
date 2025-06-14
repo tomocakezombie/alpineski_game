@@ -5,21 +5,14 @@ import java.util.LinkedList;
 import java.util.Random;
 
 public class ModelGameEnd {
-    
+    // MVCの内Viewの変数
     private ConsoleView view;
-    private MapData Logo1;
-    private MapData Logo2;
-    private boolean isView = false;
     private Score score;
     private GameDifficulty gameDifficulty;
-    
     private int baseBackGroundColor;
     private GameState gameState;
-
     private Select userSelect;
-
-
-    // 弾を保存するリスト
+    // 弾を保存するリスト 雪を表現
     private LinkedList<Bullet> bullets;
 
     ModelGameEnd(ConsoleView view, GameState gameState, Score score, GameDifficulty gameDifficulty) {
@@ -85,8 +78,6 @@ public class ModelGameEnd {
     }
 
     private void processKeyInput(String event) {
-
-        // System.out.println("event: " + event);
         // キー入力処理
         if(event.equals("ENTER") || event.equals("SPACE")){
             // ENTERキーが押されたときの処理
@@ -149,7 +140,6 @@ public class ModelGameEnd {
         
     }
 
-    
     private void putUserSelect() throws InterruptedException {
         int count = 0;
         for(String str : userSelect.getOptions()) {
@@ -159,12 +149,7 @@ public class ModelGameEnd {
             } else {
                 view.putString(str, ConsoleView.WIDTH / 2 - str.length() / 2 - 1, 22 + count*2, 15, baseBackGroundColor);
             }
-            // view.putString(str, ConsoleView.WIDTH / 2 - 5, 25 + count*2, 15, baseBackGroundColor);
             count++;
         }
     }
-
-
-    
-
 }

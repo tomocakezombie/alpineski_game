@@ -6,15 +6,17 @@ import java.util.Random;
 
 // 画面を管理する
 public class ModelPlaying {
+    // MVCにおけるViewを保持
     private ConsoleView view;
+    // MVCのViewとModelの中間を担うView
     private GameMapView gameMapView;
-    private MapData PlayingMap;
+    // private MapData PlayingMap;
     private boolean isView = false;
     private ReadFile readfile;
     private int baseBackGroundColor;
     private GameState gameState;
     private ConsoleController controller;
-    
+    // ゲームの端っこを表現
     private MapData skyMap;
 
     private GameDifficulty gameDifficulty; // ゲームの難易度（1: Easy, 2: Normal, 3: Hard）
@@ -24,8 +26,8 @@ public class ModelPlaying {
     private int flame = 0;
 
     // ロゴの右上の座標を保存
-    private int PlayingMapX;
-    private int PlayingMapY;
+    // private int PlayingMapX;
+    // private int PlayingMapY;
 
     // プレイヤーの基本情報
     private Player player;
@@ -80,13 +82,11 @@ public class ModelPlaying {
     ModelPlaying(ConsoleView view, GameState gameState, GameDifficulty gameDifficulty, Score score, ConsoleController controller) {
         // コンストラクタ
         this.view = view;
-        PlayingMapX = 10;
-        PlayingMapY = GameMapView.HEIGHT / 2;
+        // PlayingMapX = 10;
+        // PlayingMapY = GameMapView.HEIGHT / 2;
         this.obstacles = new LinkedList<Obstacle>();
         this.flags = new LinkedList<Flag>();
         this.gameState = gameState;
-
-        // readfile = new ReadFile("./ReadFiles/PlayingMAP.txt");
         this.grancePeriod = 40;
         this.gameDifficulty = gameDifficulty;
         baseBackGroundColor = 15;                                   
@@ -460,7 +460,7 @@ public class ModelPlaying {
             }
 
             if(avalanche.isDangerous()){
-                gameMapView.putString("雪崩が発生しました！", player.getPositionX() + 1, player.getPositionY() - 2, 4);
+                gameMapView.putString("気を付けろ！", player.getPositionX() + 1, player.getPositionY() - 2, 4);
                 if(avalanche.isPlaceLeft()){
                     gameMapView.putString("左", player.getPositionX()+1, player.getPositionY() - 3, 1);
                 } else {
