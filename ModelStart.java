@@ -19,6 +19,8 @@ public class ModelStart {
     private MapData Logo2;
     // スタート画面の右にある山
     private MapData Mountain;
+    // ゲーム難易度設定画面の山
+    private MapData MountainDifficulty;
     // ゲーム説明画面で表示する説明
     private MapData Description;
     private boolean isView = false;
@@ -41,10 +43,20 @@ public class ModelStart {
     private int MountainX;
     private int MountainY;
 
+    // ゲーム難易度設定画面の山情報
+    // private int MountainDifficultyX;
+    // private int MountainDifficultyY;
+
+    private int[] MountainDifficultyXs;
+    private int[] MountainDifficultyYs;
+
     // 弾を保存するリスト
     private LinkedList<Bullet> bullets;
 
-    private String yajirushi = "＞";
+    // 矢印の文字を描画する
+    private Arrow backArrow;
+    private List<Arrow> frontArrows;
+    private List<Arrow> difficultArrows;
 
     // ユーザの入力を待つための変数
     private Select userSelect;
@@ -96,6 +108,20 @@ public class ModelStart {
         DescriptionX = ConsoleView.WIDTH / 2 - Description.getWidth() / 2;
         DescriptionY = 4;
 
+        ReadFile readfileMountainDifficulty = new ReadFile("./ReadFiles/MOUNTAIN_DIFFICULTY.txt");
+        readfileMountainDifficulty.setColor('　', 15, baseBackGroundColor);
+        readfileMountainDifficulty.setBasicColor(baseBackGroundColor);
+        MountainDifficulty = readfileMountainDifficulty.getMapData();
+
+        MountainDifficultyXs = new int[2];
+        MountainDifficultyYs = new int[2];
+        
+        MountainDifficultyXs[0]=-15;
+        MountainDifficultyYs[0]=14;
+
+        MountainDifficultyXs[1]=45;
+        MountainDifficultyYs[1]=20;
+
         String[] userSelectString = new String[]{
             "モード選択",
             "ルール確認",
@@ -105,6 +131,20 @@ public class ModelStart {
         this.userSelect = new Select(userSelectString);
 
         this.gameDifficulty = gameDifficulty;
+
+        backArrow = new Arrow(ConsoleView.WIDTH / 2 - 9, ConsoleView.HEIGHT - 3, new Direction(Direction.RIGHT), 1, baseBackGroundColor, 4);
+        frontArrows = new ArrayList<Arrow>();
+        difficultArrows = new ArrayList<Arrow>();
+
+        for(int i = 0;i < 4;i++) {
+            Arrow frontArrow = new Arrow(ConsoleView.WIDTH / 2 - 9, 25 + i*2, new Direction(Direction.RIGHT), 1, baseBackGroundColor, 4);
+            frontArrows.add(frontArrow);
+        }
+
+        for(int i = 0;i < gameDifficulty.getOptions().length;i++) {
+            Arrow difficultArrow = new Arrow(ConsoleView.WIDTH / 2 - 10 + i * 10 - 3, ConsoleView.HEIGHT / 4 + 4, new Direction(Direction.RIGHT), 1, baseBackGroundColor, 3);
+            difficultArrows.add(difficultArrow);
+        }
     }
 
     public void updateBullets() {
@@ -232,9 +272,15 @@ public class ModelStart {
 
     // 常に実行する処理
     private void processAlways() throws InterruptedException,IOException{
-
+        // 難易度選択中の場合
         if(isUserEnterDifficulty){
-            // 難易度選択中の場合
+            // MountainDifficulty;
+            // 山の描画
+            // view.putMap(MountainDifficultyX, MountainDifficultyY, MountainDifficulty);
+            for(int i = 0; i < MountainDifficultyXs.length; i++) {
+                view.putMap(MountainDifficultyXs[i], MountainDifficultyYs[i], MountainDifficulty);
+            }
+
             view.putString("モード選択画面", ConsoleView.WIDTH / 2 - 5, ConsoleView.HEIGHT / 4-5, 15, baseBackGroundColor);
             view.putString("左右キーで難易度変更、ＥＮＴＥＲキーでゲームを開始できます", ConsoleView.WIDTH / 4 +5, ConsoleView.HEIGHT / 4 + 1, 15, baseBackGroundColor);
             view.putString("現在のモード: " + gameDifficulty.getCurrentSelection(), ConsoleView.WIDTH / 2-5, ConsoleView.HEIGHT / 4 + 2, 15, baseBackGroundColor);
@@ -243,6 +289,7 @@ public class ModelStart {
                 if(i == gameDifficulty.getCurrentIndex()) {
                     // 選択中の項目は色を変える
                     view.putString(gameDifficulty.getOptions()[i], ConsoleView.WIDTH / 2 - 10 + i * 10, ConsoleView.HEIGHT / 4 + 4 , 1, baseBackGroundColor);
+                    difficultArrows.get(i).put(view);
                 } else {
                     view.putString(gameDifficulty.getOptions()[i], ConsoleView.WIDTH / 2 - 10 + i * 10, ConsoleView.HEIGHT / 4 + 4 , 15, baseBackGroundColor);
                 }
@@ -254,7 +301,8 @@ public class ModelStart {
         }
 
         if(isUserEnterDescriptin){
-            putYajirusi();
+            // putYajirusi();
+            backArrow.put(view);
             view.putString("ＥＮＴＥＲキーで戻る", ConsoleView.WIDTH / 2 - 5, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
 
             // 説明の描画
@@ -266,7 +314,8 @@ public class ModelStart {
             // ランキング確認中の場合
             view.putString("ランキング画面", ConsoleView.WIDTH / 2 - 3, ConsoleView.HEIGHT / 4-5, 15, baseBackGroundColor);
             showRanking();
-            putYajirusi();
+            // putYajirusi();
+            backArrow.put(view);
             view.putString("ＥＮＴＥＲキーで戻る", ConsoleView.WIDTH / 2 - 5, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
 
             return;
@@ -288,6 +337,7 @@ public class ModelStart {
             if(count == userSelect.getCurrentIndex()) {
                 // 選択中の項目は色を変える
                 view.putString(str, ConsoleView.WIDTH / 2 - 5, 25 + count*2, 1, baseBackGroundColor);
+                frontArrows.get(count).put(view);
             } else {
                 view.putString(str, ConsoleView.WIDTH / 2 - 5, 25 + count*2, 15, baseBackGroundColor);
             }
@@ -303,7 +353,7 @@ public class ModelStart {
         };
         String[] titles = { "NORMAL", "HARD", "ENDLESS" };
 
-        int baseX = ConsoleView.WIDTH / 6; // 横並びの基準位置
+        int baseX = ConsoleView.WIDTH / 8; // 横並びの基準位置
         int sectionY = ConsoleView.HEIGHT / 4 - 5;
 
         for (int i = 0; i < files.length; i++) {
@@ -332,18 +382,6 @@ public class ModelStart {
             }
         }
 
-    }
-
-    private void putYajirusi(){
-        if(flame % 8 <= 1){
-            view.putString(yajirushi, ConsoleView.WIDTH / 2 - 9, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
-        } else if(flame % 8 <= 4){
-            view.putString(yajirushi, ConsoleView.WIDTH / 2 - 8, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
-        }  else if(flame % 8 <= 6){
-            view.putString(yajirushi, ConsoleView.WIDTH / 2 - 7, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
-        } else {
-            view.putString(yajirushi, ConsoleView.WIDTH / 2 - 6, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
-        }
     }
     
 }
