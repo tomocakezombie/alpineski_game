@@ -5,14 +5,18 @@ import java.util.Random;
 
 public class Model {
 
+	// MVCの内Viewの変数
 	private ConsoleView view;
+	// MVCの内Controllerの変数
 	private ConsoleController controller;
-	private LinkedList<Bullet> bullets;
+	// ゲームの状態を管理する変数
 	private GameState gameState;
-	private GameDifficulty gameDifficulty; // ゲームの難易度（1: Easy, 2: Normal, 3: Hard）
+	// ゲームの難易度（1: Easy, 2: Normal, 3: Hard）
+	private GameDifficulty gameDifficulty;
+	// ゲームのスコアを保持する
 	private Score score;
 	
-	// 新しいクラス
+	// Modelの派生クラス
 	private ModelPrepareStart modelPrepareStart;
 	private ModelStart modelStart;
 	private ModelPreparePlaying modelPreparePlaying;
@@ -22,32 +26,22 @@ public class Model {
 
 	public Model() {
 		view = new ConsoleView();
-		// System.out.println("view finished");
 		controller = new ConsoleController(this);
-		// System.out.println("controller finished");
-		this.bullets = new LinkedList<Bullet>();
-		// this.gameState = new GameState(GameState.START);
-		this.gameState = new GameState(); // 初期状態をPREPAREPLAYINGに設定
+		// 初期状態をPREPAREPLAYINGに設定
+		this.gameState = new GameState(); // コンストラクタで呼び出したときのみ、PRESTARTに遷移
 		this.score = new Score();
-
-		// String[] gameDifficultyStrings = {"NORMAL", "HARD", "ENDLESS"};
-		// this.gameDifficulty = new GameDifficulty(gameDifficultyStrings);
 		this.gameDifficulty = new GameDifficulty();
-
 		this.modelPrepareStart = new ModelPrepareStart(gameState, view);
 		this.modelStart = new ModelStart(view, gameState, gameDifficulty);
-
 		this.modelPlaying = new ModelPlaying(view, gameState, gameDifficulty, score, controller);
 		this.modelPreparePlaying = new ModelPreparePlaying(gameState, this.modelPlaying, view);
-
 		this.modelWrite = new ModelWrite(score, gameState, gameDifficulty);
 		this.modelGameEnd = new ModelGameEnd(view, gameState, score, gameDifficulty);
-		
 	}
 	
 	public synchronized void process(String event) throws IOException, InterruptedException {
 
-		// ここでは実際には描画しないでステータスを更新する。
+		// ステータスを更新する。
 		switch( gameState.getState() ) {
 			case GameState.PREPARESTART:
 				modelPrepareStart.process(event);
@@ -82,7 +76,4 @@ public class Model {
 		Model model = new Model();
 		model.run();
 	}
-	
-
-
 }

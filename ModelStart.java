@@ -11,10 +11,15 @@ import java.util.Random;
 
 // スタート画面を管理する
 public class ModelStart {
+    // MVCのViewを保持
     private ConsoleView view;
+    // スタート画面の上のロゴ
     private MapData Logo1;
+    // スタート画面の下のロゴ
     private MapData Logo2;
+    // スタート画面の右にある山
     private MapData Mountain;
+    // ゲーム説明画面で表示する説明
     private MapData Description;
     private boolean isView = false;
     private GameDifficulty gameDifficulty;
@@ -62,8 +67,8 @@ public class ModelStart {
 
         baseBackGroundColor = 111;    
 
+        // ファイル読み込み処理
         ReadFile readfile1 = new ReadFile("./ReadFiles/LOGO1.txt");
-                                
         readfile1.setColor('＃', 15, 15);
         readfile1.setColor('　', baseBackGroundColor, baseBackGroundColor);
         readfile1.setBasicColor(baseBackGroundColor);
@@ -87,13 +92,9 @@ public class ModelStart {
 
         ReadFile readfileDescription = new ReadFile("./ReadFiles/DESCRIPTION.txt");
         readfileDescription.setBasicColor(baseBackGroundColor);
-        // readfileDescription.setColor('〇', 0, baseBackGroundColor);
         Description = readfileDescription.getMapData();
-
         DescriptionX = ConsoleView.WIDTH / 2 - Description.getWidth() / 2;
         DescriptionY = 4;
-
-        
 
         String[] userSelectString = new String[]{
             "モード選択",
@@ -138,25 +139,23 @@ public class ModelStart {
         processAlways();
     }
     
+    // 時間経過処理
     private void processTimeElapsed(){
         updateBullets();
         Logo2X = Math.max(Logo2X - 10, Logo1X);
         
         Random random = new Random();
-        // 例: 1からobstacleFrequency未満の乱数
+        // 1からobstacleFrequency未満の乱数
         int randomValue = random.nextInt(ConsoleView.WIDTH - 1) + 1;
 
         Bullet bulletTest = new Bullet('＊', randomValue, 0, 1, 1, 254, baseBackGroundColor);
-        // Bullet bulletTest = new Bullet('＊', randomValue, 0, 1, 1, 254, 1);
         bullets.add(bulletTest);
 
         flame++;
     }
 
+    // キー入力処理
     private void processKeyInput(String event) {
-
-        // System.out.println("event: " + event);
-        // キー入力処理
         if(event.equals("ENTER")){
             // ENTERキーが押されたときの処理
 
@@ -233,8 +232,6 @@ public class ModelStart {
 
     // 常に実行する処理
     private void processAlways() throws InterruptedException,IOException{
-        
-        // System.out.println(MountainX + ", " + MountainY);
 
         if(isUserEnterDifficulty){
             // 難易度選択中の場合
@@ -257,16 +254,7 @@ public class ModelStart {
         }
 
         if(isUserEnterDescriptin){
-            // Enter押せの描画
-            if(flame % 8 <= 1){
-                view.putString(yajirushi, ConsoleView.WIDTH / 2 - 9, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
-            } else if(flame % 8 <= 4){
-                view.putString(yajirushi, ConsoleView.WIDTH / 2 - 8, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
-            }  else if(flame % 8 <= 6){
-                view.putString(yajirushi, ConsoleView.WIDTH / 2 - 7, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
-            } else {
-                view.putString(yajirushi, ConsoleView.WIDTH / 2 - 6, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
-            }
+            putYajirusi();
             view.putString("ＥＮＴＥＲキーで戻る", ConsoleView.WIDTH / 2 - 5, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
 
             // 説明の描画
@@ -278,15 +266,7 @@ public class ModelStart {
             // ランキング確認中の場合
             view.putString("ランキング画面", ConsoleView.WIDTH / 2 - 3, ConsoleView.HEIGHT / 4-5, 15, baseBackGroundColor);
             showRanking();
-            if(flame % 8 <= 1){
-                view.putString(yajirushi, ConsoleView.WIDTH / 2 - 9, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
-            } else if(flame % 8 <= 4){
-                view.putString(yajirushi, ConsoleView.WIDTH / 2 - 8, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
-            }  else if(flame % 8 <= 6){
-                view.putString(yajirushi, ConsoleView.WIDTH / 2 - 7, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
-            } else {
-                view.putString(yajirushi, ConsoleView.WIDTH / 2 - 6, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
-            }
+            putYajirusi();
             view.putString("ＥＮＴＥＲキーで戻る", ConsoleView.WIDTH / 2 - 5, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
 
             return;
@@ -311,7 +291,6 @@ public class ModelStart {
             } else {
                 view.putString(str, ConsoleView.WIDTH / 2 - 5, 25 + count*2, 15, baseBackGroundColor);
             }
-            // view.putString(str, ConsoleView.WIDTH / 2 - 5, 25 + count*2, 15, baseBackGroundColor);
             count++;
         }
     }
@@ -353,6 +332,18 @@ public class ModelStart {
             }
         }
 
+    }
+
+    private void putYajirusi(){
+        if(flame % 8 <= 1){
+            view.putString(yajirushi, ConsoleView.WIDTH / 2 - 9, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
+        } else if(flame % 8 <= 4){
+            view.putString(yajirushi, ConsoleView.WIDTH / 2 - 8, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
+        }  else if(flame % 8 <= 6){
+            view.putString(yajirushi, ConsoleView.WIDTH / 2 - 7, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
+        } else {
+            view.putString(yajirushi, ConsoleView.WIDTH / 2 - 6, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
+        }
     }
     
 }
