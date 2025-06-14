@@ -15,6 +15,11 @@ public class ModelGameEnd {
     // 弾を保存するリスト 雪を表現
     private LinkedList<Bullet> bullets;
 
+    private MapData scoreLogo;
+
+    // 矢印を表示する
+    private LinkedList<Arrow> userArrows;
+
     ModelGameEnd(ConsoleView view, GameState gameState, Score score, GameDifficulty gameDifficulty) {
         this.view = view;
         
@@ -32,6 +37,18 @@ public class ModelGameEnd {
             "タイトルへ戻る",
         };
         userSelect = new Select(userSelectString);
+        userArrows = new LinkedList<Arrow>();
+
+        for(int i = 0;i <= userSelect.getMaxSelection();i++){
+            userArrows.add(new Arrow(ConsoleView.WIDTH / 2 - 7, ConsoleView.HEIGHT / 2 + 4 + 2 * i, new Direction(Direction.RIGHT), 1, baseBackGroundColor, 3));
+        }
+
+        // スコアロゴの読み込み
+        ReadFile readFile = new ReadFile("ReadFiles/SCORELOGO.txt");
+        readFile.setBasicColor(baseBackGroundColor);
+        readFile.setColor('　',baseBackGroundColor,baseBackGroundColor);
+        readFile.setColor('＃',255,255);
+        scoreLogo = readFile.getMapData();
         
     }
 
@@ -125,7 +142,7 @@ public class ModelGameEnd {
 
         putBullets();
 
-        view.putString("スコア", ConsoleView.WIDTH / 2 - 3, ConsoleView.HEIGHT / 2 - 5, 255, baseBackGroundColor);
+        // view.putString("スコア", ConsoleView.WIDTH / 2 - 3, ConsoleView.HEIGHT / 2 - 5, 255, baseBackGroundColor);
         view.putString("ゲーム難易度：", ConsoleView.WIDTH / 2 - 8, ConsoleView.HEIGHT / 2 - 2, 255, baseBackGroundColor);
 
         gameDifficulty.setPosition(ConsoleView.WIDTH / 2 - 1, ConsoleView.HEIGHT / 2 - 2);
@@ -136,6 +153,10 @@ public class ModelGameEnd {
         score.setColor(255, baseBackGroundColor);
         score.put(view);
 
+        // スコアロゴの表示
+        // scoreLogo.put(view, ConsoleView.WIDTH / 2 - scoreLogo.getWidth() / 2, ConsoleView.HEIGHT / 2 - 10);
+        view.putMap(ConsoleView.WIDTH / 2 - scoreLogo.getWidth() / 2, ConsoleView.HEIGHT / 2 - 10, scoreLogo);
+
         putUserSelect();
         
     }
@@ -145,9 +166,10 @@ public class ModelGameEnd {
         for(String str : userSelect.getOptions()) {
             if(count == userSelect.getCurrentIndex()) {
                 // 選択中の項目は色を変える
-                view.putString(str, ConsoleView.WIDTH / 2 - str.length() / 2 - 1, 22 + count*2, 1, baseBackGroundColor);
+                view.putString(str, ConsoleView.WIDTH / 2 - str.length() / 2 - 1, 24 + count*2, 1, baseBackGroundColor);
+                userArrows.get(count).put(view);
             } else {
-                view.putString(str, ConsoleView.WIDTH / 2 - str.length() / 2 - 1, 22 + count*2, 15, baseBackGroundColor);
+                view.putString(str, ConsoleView.WIDTH / 2 - str.length() / 2 - 1, 24 + count*2, 15, baseBackGroundColor);
             }
             count++;
         }

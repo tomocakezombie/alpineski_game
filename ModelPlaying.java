@@ -455,9 +455,9 @@ public class ModelPlaying {
         // エンドレス限定処理
         if(gameDifficulty.getCurrentSelection() == GameDifficulty.ENDLRESS){
             // スピードアップ処理
-            if(flame > 5 && 0 <= flame % 30 && flame % 30 < 5){
-                gameMapView.putString("ＳＰＥＥＤＵＰ！", player.getPositionX() + 1, player.getPositionY() - 2, 4);
-            }
+            // if(flame > 5 && 0 <= flame % 30 && flame % 30 < 5){
+            //     gameMapView.putString("．．．！", player.getPositionX() + 1, player.getPositionY() - 1, 4);
+            // }
 
             if(avalanche.isDangerous()){
                 gameMapView.putString("気を付けろ！", player.getPositionX() + 1, player.getPositionY() - 2, 4);
