@@ -23,6 +23,13 @@ public class ModelStart {
     private MapData MountainDifficulty;
     // ゲーム説明画面で表示する説明
     private MapData Description;
+    // 隠し画像を保存
+    private MapData HiddenImage;
+    private KeySequenceDetector keySequenceDetector;
+    private int HiddenImageX = 55;
+    private int HiddenImageY = ConsoleView.HEIGHT;
+    private int HiddenImageYMin = 10;
+
     private boolean isView = false;
     private GameDifficulty gameDifficulty;
     
@@ -113,14 +120,28 @@ public class ModelStart {
         readfileMountainDifficulty.setBasicColor(baseBackGroundColor);
         MountainDifficulty = readfileMountainDifficulty.getMapData();
 
-        MountainDifficultyXs = new int[2];
-        MountainDifficultyYs = new int[2];
+        MountainDifficultyXs = new int[1];
+        MountainDifficultyYs = new int[1];
         
         MountainDifficultyXs[0]=-15;
         MountainDifficultyYs[0]=14;
 
-        MountainDifficultyXs[1]=45;
-        MountainDifficultyYs[1]=20;
+        // MountainDifficultyXs[1]=45;
+        // MountainDifficultyYs[1]=20;
+
+        ReadFile readfileHiddenImage = new ReadFile("./ReadFiles/SECRET.txt");
+
+        // readfileHiddenImage.setBasicColor(baseBackGroundColor);
+        readfileHiddenImage.setColor('Ａ', 255, 255);
+        readfileHiddenImage.setColor('Ｂ', 0, 0);
+        readfileHiddenImage.setColor('Ｃ', 172, 172);
+        readfileHiddenImage.setColor('Ｄ', 178, 178);
+        readfileHiddenImage.setColor('Ｅ', baseBackGroundColor, baseBackGroundColor);
+
+        HiddenImage = readfileHiddenImage.getMapData();
+
+        List<String> sequence = List.of("UP", "DOWN", "UP", "DOWN", "a", "b", "a", "b");
+        keySequenceDetector = new KeySequenceDetector(sequence);
 
         String[] userSelectString = new String[]{
             "モード選択",
@@ -196,6 +217,10 @@ public class ModelStart {
 
     // キー入力処理
     private void processKeyInput(String event) {
+        if(isUserEnterDifficulty){
+            keySequenceDetector.input(event);
+        }
+
         if(event.equals("ENTER")){
             // ENTERキーが押されたときの処理
 
@@ -213,11 +238,14 @@ public class ModelStart {
                 // ユーザが難易度を選択している場合
                 isUserEnterDifficulty = false;
                 gameState.setNextState();
+                // 初期化
+                HiddenImageY = ConsoleView.HEIGHT;
+                keySequenceDetector.reset();
                 return;
             }
 
             switch(userSelect.getCurrentIndex()) {
-                case 0: // モード選択 (今は無視してゲーム開始)
+                case 0: 
                     isUserEnterDifficulty = true;
                     break;
                 case 1: // ルール確認
@@ -274,24 +302,34 @@ public class ModelStart {
     private void processAlways() throws InterruptedException,IOException{
         // 難易度選択中の場合
         if(isUserEnterDifficulty){
-            // MountainDifficulty;
+           
             // 山の描画
             // view.putMap(MountainDifficultyX, MountainDifficultyY, MountainDifficulty);
             for(int i = 0; i < MountainDifficultyXs.length; i++) {
                 view.putMap(MountainDifficultyXs[i], MountainDifficultyYs[i], MountainDifficulty);
             }
 
+             // 秘密画像の描画
+            if(keySequenceDetector.isDetected()) {
+                // シークエンスが検出された場合
+                view.putMap(HiddenImageX, HiddenImageY, HiddenImage);
+                if(HiddenImageY > HiddenImageYMin) {
+                    // 秘密画像が表示されている場合、Y座標を下げる
+                    HiddenImageY -= 1;
+                }
+            }
+
             view.putString("モード選択画面", ConsoleView.WIDTH / 2 - 5, ConsoleView.HEIGHT / 4-5, 15, baseBackGroundColor);
             view.putString("左右キーで難易度変更、ＥＮＴＥＲキーでゲームを開始できます", ConsoleView.WIDTH / 4 +5, ConsoleView.HEIGHT / 4 + 1, 15, baseBackGroundColor);
-            view.putString("現在のモード: " + gameDifficulty.getCurrentSelection(), ConsoleView.WIDTH / 2-5, ConsoleView.HEIGHT / 4 + 2, 15, baseBackGroundColor);
+            view.putString("現在のモード：" + ChangeChar.toZenkaku(gameDifficulty.getCurrentSelection()), ConsoleView.WIDTH / 2-5, ConsoleView.HEIGHT / 4 + 2, 15, baseBackGroundColor);
 
             for(int i = 0; i < gameDifficulty.getOptions().length; i++) {
                 if(i == gameDifficulty.getCurrentIndex()) {
                     // 選択中の項目は色を変える
-                    view.putString(gameDifficulty.getOptions()[i], ConsoleView.WIDTH / 2 - 10 + i * 10, ConsoleView.HEIGHT / 4 + 4 , 1, baseBackGroundColor);
+                    view.putString(ChangeChar.toZenkaku(gameDifficulty.getOptions()[i]), ConsoleView.WIDTH / 2 - 10 + i * 10, ConsoleView.HEIGHT / 4 + 4 , 1, baseBackGroundColor);
                     difficultArrows.get(i).put(view);
                 } else {
-                    view.putString(gameDifficulty.getOptions()[i], ConsoleView.WIDTH / 2 - 10 + i * 10, ConsoleView.HEIGHT / 4 + 4 , 15, baseBackGroundColor);
+                    view.putString(ChangeChar.toZenkaku(gameDifficulty.getOptions()[i]), ConsoleView.WIDTH / 2 - 10 + i * 10, ConsoleView.HEIGHT / 4 + 4 , 15, baseBackGroundColor);
                 }
             }
 
@@ -327,6 +365,7 @@ public class ModelStart {
         putBullets();
         view.setResetBackGroundColor(baseBackGroundColor);
         putUserSelect();
+
         return;
         
     }
