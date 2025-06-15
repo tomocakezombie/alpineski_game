@@ -13,22 +13,33 @@ import java.util.Random;
 public class ModelStart {
     // MVCのViewを保持
     private ConsoleView view;
+    
     // スタート画面の上のロゴ
     private MapData Logo1;
+    
     // スタート画面の下のロゴ
     private MapData Logo2;
+    
     // スタート画面の右にある山
     private MapData Mountain;
+    
     // ゲーム難易度設定画面の山
     private MapData MountainDifficulty;
+    
     // ゲーム説明画面で表示する説明
     private MapData Description;
+    
     // 隠し画像を保存
     private MapData HiddenImage;
     private KeySequenceDetector keySequenceDetector;
     private int HiddenImageX = 55;
     private int HiddenImageY = ConsoleView.HEIGHT;
     private int HiddenImageYMin = 10;
+    
+    // ランキングのロゴで表示する
+    private MapData RankingLogo;
+    private int RankingLogoX;
+    private int RankingLogoY;
 
     private boolean isView = false;
     private GameDifficulty gameDifficulty;
@@ -51,9 +62,6 @@ public class ModelStart {
     private int MountainY;
 
     // ゲーム難易度設定画面の山情報
-    // private int MountainDifficultyX;
-    // private int MountainDifficultyY;
-
     private int[] MountainDifficultyXs;
     private int[] MountainDifficultyYs;
 
@@ -67,6 +75,7 @@ public class ModelStart {
 
     // ユーザの入力を待つための変数
     private Select userSelect;
+    private int userSelectX;
 
     // // 出力する場面の状態を持つための変数
     private boolean isUserEnterDescriptin = false;
@@ -140,7 +149,7 @@ public class ModelStart {
 
         HiddenImage = readfileHiddenImage.getMapData();
 
-        List<String> sequence = List.of("UP", "DOWN", "UP", "DOWN", "a", "b", "a", "b");
+        List<String> sequence = List.of("UP", "UP", "DOWN", "DOWN", "LEFT", "RIGHT", "LEFT", "RIGHT", "b", "a");
         keySequenceDetector = new KeySequenceDetector(sequence);
 
         String[] userSelectString = new String[]{
@@ -152,6 +161,7 @@ public class ModelStart {
         this.userSelect = new Select(userSelectString);
 
         this.gameDifficulty = gameDifficulty;
+        userSelectX = ConsoleView.WIDTH / 2 - 15;
 
         backArrow = new Arrow(ConsoleView.WIDTH / 2 - 9, ConsoleView.HEIGHT - 3, new Direction(Direction.RIGHT), 1, baseBackGroundColor, 4);
         frontArrows = new ArrayList<Arrow>();
@@ -163,9 +173,18 @@ public class ModelStart {
         }
 
         for(int i = 0;i < gameDifficulty.getOptions().length;i++) {
-            Arrow difficultArrow = new Arrow(ConsoleView.WIDTH / 2 - 10 + i * 10 - 3, ConsoleView.HEIGHT / 4 + 4, new Direction(Direction.RIGHT), 1, baseBackGroundColor, 3);
+            Arrow difficultArrow = new Arrow(userSelectX + i * 10 - 3, ConsoleView.HEIGHT / 4 + 4, new Direction(Direction.RIGHT), 1, baseBackGroundColor, 3);
             difficultArrows.add(difficultArrow);
         }
+
+        ReadFile readfileRankingLogo = new ReadFile("./ReadFiles/RANKINGLOGO.txt");
+        readfileRankingLogo.setColor('＃', 255, 255);
+        readfileRankingLogo.setColor('　', baseBackGroundColor, baseBackGroundColor);
+        RankingLogo = readfileRankingLogo.getMapData();
+        RankingLogoX = ConsoleView.WIDTH / 2 - RankingLogo.getWidth() / 2;
+        RankingLogoY = ConsoleView.HEIGHT / 4 - 5;
+
+
     }
 
     public void updateBullets() {
@@ -304,7 +323,6 @@ public class ModelStart {
         if(isUserEnterDifficulty){
            
             // 山の描画
-            // view.putMap(MountainDifficultyX, MountainDifficultyY, MountainDifficulty);
             for(int i = 0; i < MountainDifficultyXs.length; i++) {
                 view.putMap(MountainDifficultyXs[i], MountainDifficultyYs[i], MountainDifficulty);
             }
@@ -326,10 +344,10 @@ public class ModelStart {
             for(int i = 0; i < gameDifficulty.getOptions().length; i++) {
                 if(i == gameDifficulty.getCurrentIndex()) {
                     // 選択中の項目は色を変える
-                    view.putString(ChangeChar.toZenkaku(gameDifficulty.getOptions()[i]), ConsoleView.WIDTH / 2 - 10 + i * 10, ConsoleView.HEIGHT / 4 + 4 , 1, baseBackGroundColor);
+                    view.putString(ChangeChar.toZenkaku(gameDifficulty.getOptions()[i]), userSelectX + i * 10, ConsoleView.HEIGHT / 4 + 4 , 1, baseBackGroundColor);
                     difficultArrows.get(i).put(view);
                 } else {
-                    view.putString(ChangeChar.toZenkaku(gameDifficulty.getOptions()[i]), ConsoleView.WIDTH / 2 - 10 + i * 10, ConsoleView.HEIGHT / 4 + 4 , 15, baseBackGroundColor);
+                    view.putString(ChangeChar.toZenkaku(gameDifficulty.getOptions()[i]), userSelectX + i * 10, ConsoleView.HEIGHT / 4 + 4 , 15, baseBackGroundColor);
                 }
             }
 
@@ -393,7 +411,10 @@ public class ModelStart {
         String[] titles = { "NORMAL", "HARD", "ENDLESS" };
 
         int baseX = ConsoleView.WIDTH / 8; // 横並びの基準位置
-        int sectionY = ConsoleView.HEIGHT / 4 - 5;
+        // int sectionY = ConsoleView.HEIGHT / 4 - 5;
+        int sectionY = ConsoleView.HEIGHT / 2;
+
+        view.putMap(RankingLogoX, RankingLogoY, RankingLogo);
 
         for (int i = 0; i < files.length; i++) {
             List<String> lines = Files.readAllLines(Path.of(files[i]));
@@ -410,7 +431,7 @@ public class ModelStart {
 
             // タイトル表示（横にずらす）
             int x = baseX + i * (ConsoleView.WIDTH / 3);
-            view.putString("ランキング（" + ChangeChar.toZenkaku(titles[i]) + "）", x, sectionY, 15, baseBackGroundColor);
+            view.putString("〇" + ChangeChar.toZenkaku(titles[i]) , x, sectionY, 15, baseBackGroundColor);
 
             // スコア表示（縦に並べる）
             int rank = 1;
