@@ -83,7 +83,6 @@ public class ModelStart {
     private boolean isUserEnterDifficulty = false;
     private int flame = 0; // 時間経過を管理するための変数
 
-
     ModelStart(ConsoleView view, GameState gameState, GameDifficulty gameDifficulty) {
         this.view = view;
         Logo1X = 10;
@@ -101,6 +100,7 @@ public class ModelStart {
         readfile1.setColor('　', baseBackGroundColor, baseBackGroundColor);
         readfile1.setBasicColor(baseBackGroundColor);
         Logo1 = readfile1.getMapData();
+        
 
         ReadFile readfile2 = new ReadFile("./ReadFiles/LOGO2.txt");
         readfile2.setColor('＃', 15, 15);
@@ -339,7 +339,7 @@ public class ModelStart {
 
             view.putString("モード選択画面", ConsoleView.WIDTH / 2 - 5, ConsoleView.HEIGHT / 4-5, 15, baseBackGroundColor);
             view.putString("左右キーで難易度変更、ＥＮＴＥＲキーでゲームを開始できます", ConsoleView.WIDTH / 4 +5, ConsoleView.HEIGHT / 4 + 1, 15, baseBackGroundColor);
-            view.putString("現在のモード：" + ChangeChar.toZenkaku(gameDifficulty.getCurrentSelection()), ConsoleView.WIDTH / 2-5, ConsoleView.HEIGHT / 4 + 2, 15, baseBackGroundColor);
+            view.putString("現在のモード：" + ChangeChar.toZenkaku(gameDifficulty.getCurrentSelection()), ConsoleView.WIDTH / 2-7, ConsoleView.HEIGHT / 4 + 2, 15, baseBackGroundColor);
 
             for(int i = 0; i < gameDifficulty.getOptions().length; i++) {
                 if(i == gameDifficulty.getCurrentIndex()) {
