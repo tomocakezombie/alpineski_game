@@ -110,10 +110,10 @@ public class MapData {
         if (y < 0 || y >= height) {
             return false;
         }
-        if (charColor < 0 || charColor >= ConsoleColor.COLORMAXINDEX) {
+        if (charColor < 0 || charColor > ConsoleColor.COLORMAXINDEX) {
             return false;
         }
-        if (backGroundColor < 0 || backGroundColor >= ConsoleColor.COLORMAXINDEX) {
+        if (backGroundColor < 0 || backGroundColor > ConsoleColor.COLORMAXINDEX) {
             return false;
         }
 

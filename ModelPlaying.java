@@ -431,7 +431,7 @@ public class ModelPlaying {
         putObstacles();
         putAvalancheObstacles();
         
-        gameMapView.putMap(0, 0, skyMap); // 空のマップを描画 なぜかばぐる
+        gameMapView.putMap(0, 0, skyMap); // 空のマップを描画 
         gameMapView.putMap(gameMapView.WIDTH - grancePeriod, 0, skyMap); // プレイ中のマップを描画
 
         gameMapView.putString("ＨＰ：", startX, startY, 0);
@@ -440,6 +440,7 @@ public class ModelPlaying {
         score.put(gameMapView);
 
         gameDifficulty.setPosition(startX, startY + 1);
+        gameDifficulty.setColor(0, baseBackGroundColor);
         gameDifficulty.put(gameMapView);
 
         if(invincibleTime > 0){

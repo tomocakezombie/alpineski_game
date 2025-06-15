@@ -9,5 +9,15 @@ public class ShowColorTable {
                 System.out.println();
             }
         }
+        System.out.println(); // 改行
+        for (int i = 0; i < 256; i++) {
+            // 背景色で出力
+            System.out.printf("\u001B[48;5;%dm%3d\u001B[0m ", i, i);
+
+            // 1行に6個ずつ表示
+            if ((i + 1) % 6 == 0) {
+                System.out.println();
+            }
+        }
     }
 }
