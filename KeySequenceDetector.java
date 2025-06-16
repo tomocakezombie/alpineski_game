@@ -18,11 +18,21 @@ public class KeySequenceDetector {
         }
 
         buffer.add(key);
-        System.out.println("Key added to buffer: " + key);
         // バッファサイズを制限
         if (buffer.size() > targetSequence.size()) {
             buffer.removeFirst();
         }
+        
+        //一文字でもキーの順番が異なる時、バッファをクリア
+        for(int i = 0; i < Math.min(buffer.size(), targetSequence.size()); i++) {
+            // System.out.println("Comparing: " + buffer.get(i) + " with " + targetSequence.get(i));
+            if (!buffer.get(i).equals(targetSequence.get(i))) {
+                buffer.clear();
+                isDetected = false;
+                return false;
+            }
+        }
+
         isDetected = buffer.equals(targetSequence);
         return isDetected;
     }

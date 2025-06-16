@@ -10,6 +10,11 @@ public class GameMapView extends ConsoleView {
         this.player = player;
     }
 
+	public GameMapView(){
+		this.screen = new MapData(HEIGHT, WIDTH);
+		this.player = null; // プレイヤーが設定されていない場合
+	}
+
     public void putConsoleView(ConsoleView view) throws InterruptedException {
         int playerX = player.getPositionX();
         int playerY = player.getPositionY();

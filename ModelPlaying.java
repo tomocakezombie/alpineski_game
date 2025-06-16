@@ -33,11 +33,11 @@ public class ModelPlaying {
     private Player player;
 
     // 障害物を保存するリスト
-    private LinkedList<Obstacle> obstacles;
-    private LinkedList<Obstacle> avalancheObstacles;
+    public LinkedList<Obstacle> obstacles;
+    public LinkedList<Obstacle> avalancheObstacles;
 
     // 旗を保存するリスト
-    private LinkedList<Flag> flags;
+    public LinkedList<Flag> flags;
     // private int intervalFlag;
 
     // スコアの保存

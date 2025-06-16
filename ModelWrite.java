@@ -18,6 +18,13 @@ public class ModelWrite {
         this.gameDifficulty = gameDifficulty;
     }
 
+    public Score getScore() {
+        return score;
+    }
+    public GameState getGameState() {
+        return gameState;
+    }
+
     public void process(String event) throws IOException, InterruptedException {
 
         if(event.equals("TIME_ELAPSED")) { // 時間経過イベント

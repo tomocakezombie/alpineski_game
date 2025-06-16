@@ -13,7 +13,7 @@ public class ModelGameEnd {
     private GameState gameState;
     private Select userSelect;
     // 弾を保存するリスト 雪を表現
-    private LinkedList<Bullet> bullets;
+    public LinkedList<Bullet> bullets;
 
     private MapData scoreLogo;
 
