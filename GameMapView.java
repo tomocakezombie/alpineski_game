@@ -34,7 +34,6 @@ public class GameMapView extends ConsoleView {
         clear();
     }
 
-    //  下の処理は、ゴミみたいな処理である。  絶対直すべき処理 継承すべきじゃなかった。
     public boolean setColor(int x, int y, int charColor, int backGroundColor) {
 		if(x < 0 || x >= WIDTH) {
 			return false;
