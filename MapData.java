@@ -120,8 +120,6 @@ public class MapData {
         this.mapCharColor[y][x] = charColor;
         this.mapBackGroundColor[y][x] = backGroundColor;
 
-        // System.out.println("setColor: (" + x + ", " + y + ") = " + charColor + ", " + backGroundColor);
-
         return true;
     }
 
@@ -245,30 +243,6 @@ public class MapData {
 
     public int getWidth() {
         return width;
-    }
-
-    public void showDebugInfo(){
-        System.out.println("mapData Char:");
-        for(int i = 0;i < height;i++){
-            for(int j = 0;j < width;j++){
-                System.out.print(map[i][j]+ ",");
-            }
-            System.out.println();
-        }
-        System.out.println("mapCharColor:");
-        for(int i = 0;i < height;i++){
-            for(int j = 0;j < width;j++){
-                System.out.print(mapCharColor[i][j]+",");
-            }
-            System.out.println();
-        }
-        System.out.println("mapBackGroundColor:");
-        for(int i = 0;i < height;i++){
-            for(int j = 0;j < width;j++){
-                System.out.print(mapBackGroundColor[i][j]+",");
-            }
-            System.out.println();
-        }
     }
 
 }

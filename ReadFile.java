@@ -90,12 +90,10 @@ public class ReadFile {
     public void setColor(char colorName, int charColorValue, int backgroundColorValue) {
         if (0 <= charColorValue && charColorValue <= ConsoleColor.COLORMAXINDEX) {
             charColorMap.put(String.valueOf(colorName).toUpperCase(), charColorValue);
-            // System.out.println("charColorValue: " + charColorValue);
         }
 
         if (0 <= backgroundColorValue && backgroundColorValue <= ConsoleColor.COLORMAXINDEX) {
             backGroundColorMap.put(String.valueOf(colorName).toUpperCase(), backgroundColorValue);
-            // System.out.println("backgroundValue: " + backgroundColorValue);
         }
 
     }

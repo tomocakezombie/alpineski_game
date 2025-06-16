@@ -29,11 +29,9 @@ public class ConsoleView{
 	
 	public boolean setColor(int x, int y, int charColor, int backGroundColor) {
 		if(x < 0 || x >= WIDTH) {
-			System.out.println("setColor: x is out of bounds: " + x);
 			return false;
 		}
 		if(y < 0 || y >= HEIGHT) {
-			System.out.println("setColor: y is out of bounds: " + y);
 			return false;
 		}
 	    if (charColor < 0 || charColor > ConsoleColor.COLORMAXINDEX) {
@@ -49,11 +47,9 @@ public class ConsoleView{
 	
 	public boolean setColor(int x, int y, int charColor) {
 		if(x < 0 || x >= WIDTH) {
-			// System.out.println("setColor: x is out of bounds: " + x);
 			return false;
 		}
 		if(y < 0 || y >= HEIGHT) {
-			// System.out.println("setColor: y is out of bounds: " + y);
 			return false;
 		}
 	    if (charColor < 0 || charColor >= ConsoleColor.COLORMAXINDEX) {
@@ -85,11 +81,9 @@ public class ConsoleView{
 	
 	public void putChar(char c, int x, int y) {
 		if(x >= WIDTH || x < 0) {
-			// System.out.println("putChar: x is out of bounds: " + x);
 			return ;
 		}
 		if(y >= HEIGHT || y < 0) {
-			// System.out.println("putChar: y is out of bounds: " + y);
 			return ;
 		}
 		
@@ -98,11 +92,9 @@ public class ConsoleView{
 
 	public void putString(String str, int x, int y, int charColor, int backGroundColor) {
 		if(x >= WIDTH || x < 0) {
-			System.out.println("putString: x is out of bounds: " + x);
 			return ;
 		}
 		if(y >= HEIGHT || y < 0) {
-			System.out.println("putString: y is out of bounds: " + y);
 			return ;
 		}
 
@@ -122,11 +114,9 @@ public class ConsoleView{
 
 	public void putMap(int x, int y, MapData map) {
 		if(x >= WIDTH) {
-			System.out.println("putMap: x is out of bounds: " + x);
 			return ;
 		}
 		if(y >= HEIGHT) {
-			System.out.println("putMap: y is out of bounds: " + y);
 			return ;
 		}
 
@@ -172,7 +162,6 @@ public class ConsoleView{
 			for(int j = 0;j < WIDTH;j++) {
 				this.screen.setChar(j, i, targetMap.getChar(j, i));
 				this.screen.setColor(j, i, targetMap.getCharColor(j, i), targetMap.getBackGroundColor(j, i));
-				// System.out.println("putGameMap: " + j + ", " + i + ": " + targetMap.getChar(j, i) + ", charColor: " + targetMap.getCharColor(j, i) + ", backGroundColor: " + targetMap.getBackGroundColor(j, i));
 			}
 		}
 		
@@ -180,26 +169,15 @@ public class ConsoleView{
 
 	public void update() throws InterruptedException {
 		paint();
-		// showDebugInfo();
-		// Thread.sleep(1000);
 		clear();
-		// System.out.println("resetBackGroundColor: " + resetBackGroundColor);
 	}
 
 	public void setResetCharColor(int resetCharColor) {
 		this.resetCharColor = resetCharColor;
-		// System.out.println("resetCharColor: " + resetCharColor);
 	}
 	
 	public void setResetBackGroundColor(int resetBackGroundColor) {
 		this.resetBackGroundColor = resetBackGroundColor;
-		// System.out.println("resetBackGroundColor: " + resetBackGroundColor);
-	}
-	
-	public void showDebugInfo(){
-		screen.showDebugInfo();
-		System.out.println("resetCharColor: " + resetCharColor);
-		System.out.println("resetBackGroundColor: " + resetBackGroundColor);
 	}
 
 	public int getResetCharColor() {

@@ -47,11 +47,4 @@ public class ConsoleColor {
         return colorMap.getOrDefault(String.valueOf(colorName).toUpperCase(), COLORBLACK);
     }
 
-    // 色名を取得する（デバッグ用）
-    public void printAvailableColors() {
-        System.out.println("Available Colors:");
-        for (String color : colorMap.keySet()) {
-            System.out.println(color + " -> " + colorMap.get(color));
-        }
-    }
 }
