@@ -5,12 +5,12 @@ public class ModelPrepareStart {
     private GameState gameState;
     private ConsoleView view;
     private MapData mapData;
-    private int flameCount = 0;
-    private int flameCountMax = 42; // 最大フレーム数
+    private Flame flameCount;
     
     public ModelPrepareStart(GameState gameState, ConsoleView view) {
         this.gameState = gameState;
         this.view = view;
+        this.flameCount = new Flame(42); // 最大フレーム数を42に設定
     }
 
     public void process(String event) throws IOException, InterruptedException {
@@ -29,13 +29,13 @@ public class ModelPrepareStart {
     private void processTimeElapsed() throws IOException, InterruptedException {
         // ここに時間経過に伴う処理を追加
 
-        if(flameCount >= flameCountMax) {
+        if(flameCount.isFlameCountMaxReached()) {
             // フレーム数が最大に達した場合、ゲーム状態を更新
             gameState.setNextState();
         }
 
 
-        flameCount++;
+        flameCount.incrementFlameCount(); // フレーム数を進める
     }
 
     private void processKeyInput(String event) throws IOException, InterruptedException {
@@ -49,12 +49,12 @@ public class ModelPrepareStart {
     private void processAlways() throws IOException, InterruptedException {
         view.setResetBackGroundColor(0);
 
-        if(flameCount < flameCountMax/2){
-            view.putString("企画者：　ｔ２３ｃｓ００７　榎尾　圭登", ConsoleView.WIDTH / 2 - 10, ConsoleView.HEIGHT / 2 - 1, 234+flameCount, 0);
-            view.putString("開発者：　ｔ２３ｃｓ０１４　神田　智輝", ConsoleView.WIDTH / 2 - 10, ConsoleView.HEIGHT / 2 + 1, 234+flameCount, 0);    
+        if(flameCount.getFlameCount() < flameCount.getFlameCountMax()/2){
+            view.putString("企画者：　ｔ２３ｃｓ００７　榎尾　圭登", ConsoleView.WIDTH / 2 - 10, ConsoleView.HEIGHT / 2 - 1, 234+flameCount.getFlameCount(), 0);
+            view.putString("開発者：　ｔ２３ｃｓ０１４　神田　智輝", ConsoleView.WIDTH / 2 - 10, ConsoleView.HEIGHT / 2 + 1, 234+flameCount.getFlameCount(), 0);    
         } else {
-            view.putString("企画者：　ｔ２３ｃｓ００７　榎尾　圭登", ConsoleView.WIDTH / 2 - 10, ConsoleView.HEIGHT / 2 - 1, 255 - (flameCount - flameCountMax/2), 0);
-            view.putString("開発者：　ｔ２３ｃｓ０１４　神田　智輝", ConsoleView.WIDTH / 2 - 10, ConsoleView.HEIGHT / 2 + 1, 255 - (flameCount - flameCountMax/2), 0);    
+            view.putString("企画者：　ｔ２３ｃｓ００７　榎尾　圭登", ConsoleView.WIDTH / 2 - 10, ConsoleView.HEIGHT / 2 - 1, 255 - (flameCount.getFlameCount() - flameCount.getFlameCountMax()/2), 0);
+            view.putString("開発者：　ｔ２３ｃｓ０１４　神田　智輝", ConsoleView.WIDTH / 2 - 10, ConsoleView.HEIGHT / 2 + 1, 255 - (flameCount.getFlameCount() - flameCount.getFlameCountMax()/2), 0);    
         } 
     }
 }

@@ -6,7 +6,7 @@ public class Arrow {
     private int color;
     private int backGroundColor;
     private int width;
-    private int flameCount = 0;
+    private Flame flameCount;
     private Direction upArrow;
     private Direction downArrow;
     private Direction leftArrow;
@@ -24,27 +24,28 @@ public class Arrow {
         this.downArrow = new Direction(Direction.DOWN);
         this.leftArrow = new Direction(Direction.LEFT);
         this.rightArrow = new Direction(Direction.RIGHT);
+
+        this.flameCount = new Flame(width);
     }
 
     public void move(){
         // フレームの高進
-        flameCount++;
-        flameCount %= width; 
-
+        flameCount.incrementFlameCount();
     }
 
     public void put(ConsoleView view) {
         int arrowX = x;
         int arrowY = y;
 
+        int flameValue = flameCount.getFlameCount();
         if(upArrow.isEqual(direction)) {
-            view.putString("＾", arrowX, arrowY - flameCount, color, backGroundColor);
+            view.putString("＾", arrowX, arrowY - flameValue, color, backGroundColor);
         } else if(downArrow.isEqual(direction)) {
-            view.putString("Ｖ", arrowX, arrowY + flameCount, color, backGroundColor);
+            view.putString("Ｖ", arrowX, arrowY + flameValue, color, backGroundColor);
         } else if(leftArrow.isEqual(direction)) {
-            view.putString("＜", arrowX - flameCount, arrowY, color, backGroundColor);
+            view.putString("＜", arrowX - flameValue, arrowY, color, backGroundColor);
         } else if(rightArrow.isEqual(direction)) {
-            view.putString("＞", arrowX + flameCount, arrowY, color, backGroundColor);
+            view.putString("＞", arrowX + flameValue, arrowY, color, backGroundColor);
         } else {
             throw new IllegalArgumentException("Invalid direction: " + direction);
         }
