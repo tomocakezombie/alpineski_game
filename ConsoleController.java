@@ -23,11 +23,9 @@ public class ConsoleController implements ActionListener{
 		String line = null;
 		while ( (line = reader.readLine() ) != null) {
 			if (line.isEmpty()) {
-				// System.out.println("エンターキーが押されました");
 				line = "ENTER";
 			}
 			if (line.trim().isEmpty()) {
-				// System.out.println("スペースのみが入力されました");
 				line = "SPACE";
 			}
 			model.process(line);
@@ -38,7 +36,7 @@ public class ConsoleController implements ActionListener{
 		try {
 			model.process("TIME_ELAPSED");
 		} catch (InterruptedException e1) {
-			// TODO 自動生成された catch ブロック
+			System.err.println("InterruptedExceptionが発生しました: " + e1.getMessage());
 			e1.printStackTrace();
 		} catch (IOException e2) {
 			System.err.println("InterruptedExceptionが発生しました: " + e2.getMessage());
@@ -48,7 +46,6 @@ public class ConsoleController implements ActionListener{
 	
 	public boolean setSubDelay() {
 		if(nowDelay <= MIN_DELAY) {
-			// System.out.println("これ以上遅延時間を短くできません。");
 			return false; // 遅延時間が最小値以下の場合は変更しない
 		}
 		nowDelay = nowDelay - 1;

@@ -11,8 +11,6 @@ public class ModelPrepareStart {
     public ModelPrepareStart(GameState gameState, ConsoleView view) {
         this.gameState = gameState;
         this.view = view;
-
-        // ReadFile readFile = new ReadFile("./ReadFiles/")
     }
 
     public void process(String event) throws IOException, InterruptedException {
@@ -29,16 +27,11 @@ public class ModelPrepareStart {
     }
 
     private void processTimeElapsed() throws IOException, InterruptedException {
-        // 時間経過に応じた処理を実行
-        // 例えば、ゲームの状態を更新するなど
-        // System.out.println("Time elapsed, updating game state...");
         // ここに時間経過に伴う処理を追加
 
         if(flameCount >= flameCountMax) {
             // フレーム数が最大に達した場合、ゲーム状態を更新
             gameState.setNextState();
-            // System.out.println("Game state changed to PLAYING");
-            // ここでゲームの状態をPLAYINGに変更する処理を追加
         }
 
 
@@ -46,13 +39,9 @@ public class ModelPrepareStart {
     }
 
     private void processKeyInput(String event) throws IOException, InterruptedException {
-        // キー入力に応じた処理を実行
-        // 例えば、ゲームの状態を変更するなど
-        // System.out.println("Key input received: " + event);
         // ここにキー入力に伴う処理を追加
         if(event.equals("ENTER")){
             gameState.setNextState();
-            // System.out.println("Game state changed to START");
             return ;
         }
     }

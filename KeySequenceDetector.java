@@ -25,7 +25,6 @@ public class KeySequenceDetector {
         
         //一文字でもキーの順番が異なる時、バッファをクリア
         for(int i = 0; i < Math.min(buffer.size(), targetSequence.size()); i++) {
-            // System.out.println("Comparing: " + buffer.get(i) + " with " + targetSequence.get(i));
             if (!buffer.get(i).equals(targetSequence.get(i))) {
                 buffer.clear();
                 isDetected = false;

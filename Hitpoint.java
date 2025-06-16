@@ -6,7 +6,6 @@ public class Hitpoint {
             throw new IllegalArgumentException("Hitpoint cannot be negative: " + hitpoint);
         }
         this.hitpoint = hitpoint;
-        // this.maxHitpoint = hitpoint; // 初期値は最大ヒットポイントと同じ
     }
 
     public Hitpoint addHitpoint(int hitpoint) {

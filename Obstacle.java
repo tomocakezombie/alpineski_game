@@ -52,7 +52,6 @@ public class Obstacle  {
 	
 	public void put(GameMapView view) throws InterruptedException {
 		// 画面外に出たら非アクティブにする
-		// System.out.println("Obstacle");
 		view.putChar(icon, positionX, positionY);
 		view.setColor(this.positionX, this.positionY, this.color, this.backGroundColor);
 	}

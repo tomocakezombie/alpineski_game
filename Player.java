@@ -90,7 +90,6 @@ public class Player {
         }
     }
     public void subX() {
-        // System.out.println("positionX: " + positionX + ", minPositionX: " + minPositionX);
         if (positionX > minPositionX) {
             positionX--;
         }
@@ -125,25 +124,18 @@ public class Player {
     }
 
     public void putPlayer(GameMapView view) throws InterruptedException {
-        // System.out.println("Player");
         view.putChar(playerChar, positionX, positionY);
         view.setColor(positionX, positionY, playerCharColor, playerBackGroundColor);
-        // view.setColor(positionX, positionY, playerCharColor);
-        // view.setBackGroundColor(positionX, positionY, playerBackGroundColor);
     }
 
     public void putPlayerDamage(GameMapView view) throws InterruptedException {
         // プレイヤーがダメージを受けたときの表示
-        // System.out.println("Putting player at (" + positionX + ", " + positionY + ") with damage color: " + playerDamageColor + " and background color: " + playerBackGroundColor);
-        // System.out.println("Player");
         view.putChar(playerChar, positionX, positionY);
         view.setColor(positionX, positionY, playerDamageColor, playerBackGroundColor);
     }
 
     // 画面に色を一時的に変更して表示
     public void putPlayer(GameMapView view, int charColor, int backGroundColor) throws InterruptedException {
-        // System.out.println("Putting player at (" + positionX + ", " + positionY + ") with charColor: " + charColor + " and backGroundColor: " + backGroundColor);
-        // System.out.println("Player");
         view.putChar(playerChar, positionX, positionY);
         view.setColor(positionX, positionY, charColor, backGroundColor);
     }

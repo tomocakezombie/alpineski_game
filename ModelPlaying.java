@@ -97,7 +97,6 @@ public class ModelPlaying {
         this.player.setHitpointBackGroundColor(baseBackGroundColor);
         this.player.setPlayerDamageColor(3);
 
-        // this.intervalFlag = 30;
 
         int playerX = player.getPositionX();
         int playerY = player.getPositionY();
@@ -108,7 +107,6 @@ public class ModelPlaying {
         // 画面の中心座標
         int centerX = ConsoleView.WIDTH / 2;
         int centerY = ConsoleView.HEIGHT / 2;
-        // System.out.println("Center position: (" + centerX + ", " + centerY + ")");
 
         // マップの表示開始位置
         int startX = playerX - centerX;
@@ -416,7 +414,6 @@ public class ModelPlaying {
         // 画面の中心座標
         int centerX = ConsoleView.WIDTH / 2;
         int centerY = ConsoleView.HEIGHT / 4;
-        // System.out.println("Center position: (" + centerX + ", " + centerY + ")");
 
         // マップの表示開始位置
         int startX = playerX - centerX;
@@ -476,8 +473,6 @@ public class ModelPlaying {
         // ConsoleViewに描画
         gameMapView.putConsoleView(view);
 
-        System.out.println("time:"+avalanche.getTime());
-
         
     }
 
@@ -530,7 +525,6 @@ public class ModelPlaying {
                 successComment.resetViewFlame();
             } else {
                 missFlagComment.resetViewFlame();
-                // System.out.println("missFlagComment resetViewFlame");
                 player.damage();
             }
 
