@@ -26,6 +26,13 @@ public class Arrow {
         this.rightArrow = new Direction(Direction.RIGHT);
     }
 
+    public void move(){
+        // フレームの高進
+        flameCount++;
+        flameCount %= width; 
+
+    }
+
     public void put(ConsoleView view) {
         int arrowX = x;
         int arrowY = y;
@@ -41,10 +48,6 @@ public class Arrow {
         } else {
             throw new IllegalArgumentException("Invalid direction: " + direction);
         }
-
-        // フレームの高進
-        flameCount++;
-        flameCount %= width; 
     }
     
 }

@@ -92,6 +92,8 @@ public class ModelGameEnd {
 
         Bullet bulletTest = new Bullet('＊', randomValue, 0, 1, 1, 255, baseBackGroundColor);
         bullets.add(bulletTest);
+
+        moveArrows();
     }
 
     private void processKeyInput(String event) {
@@ -172,6 +174,13 @@ public class ModelGameEnd {
                 view.putString(str, ConsoleView.WIDTH / 2 - str.length() / 2 - 1, 24 + count*2, 15, baseBackGroundColor);
             }
             count++;
+        }
+    }
+
+    private void moveArrows() {
+        // 矢印を動かす
+        for(Arrow arrow : userArrows) {
+            arrow.move();
         }
     }
 }
