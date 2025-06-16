@@ -9,7 +9,8 @@ public class KeyCount {
         }
         this.threshold = threshold;
         this.count = 0;
-        this.isFilled = false;
+        // 0なら最初から満たされているとする
+        this.isFilled = (threshold == 0);
     }
 
     public void increment() {

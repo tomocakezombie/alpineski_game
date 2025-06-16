@@ -19,4 +19,8 @@ public class ModelPreparePlaying{
         gameState.setNextState();
         view.setResetBackGroundColor(modelPlaying.getBaseBackGroundColor());
     }
+
+    public GameState getGameState() {
+        return gameState;
+    }
 }
