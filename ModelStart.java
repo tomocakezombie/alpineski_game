@@ -167,7 +167,7 @@ public class ModelStart {
         keySequenceDetector = new KeySequenceDetector(sequence);
 
         // keySequenceDetector2 = new KeySequenceDetector(sequence);
-        keycount = new KeyCount(50);
+        keycount = new KeyCount(120);
 
         String[] userSelectString = new String[]{
             "モード選択",
