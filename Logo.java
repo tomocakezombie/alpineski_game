@@ -1,10 +1,10 @@
 // view mapをするクラス
 public class Logo {
-    Mapdata mapdata;
+    MapData mapdata;
     int x;
     int y;
 
-    public Logo(Mapdata mapdata, int x, int y) {
+    public Logo(MapData mapdata, int x, int y) {
         this.mapdata = mapdata;
         this.x = x;
         this.y = y;
