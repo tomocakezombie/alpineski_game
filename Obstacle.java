@@ -6,7 +6,7 @@ public class Obstacle  {
 	private int color;
 	private char icon;
 	private int backGroundColor;
-	private int attackPower;
+	private AttackPower attackPower;
 	
 	public Obstacle(char c, int positionX, int positionY, int movementX, int movementY, int color, int backGroundColor) {
 		super();
@@ -17,18 +17,18 @@ public class Obstacle  {
 		this.icon = c;
 		this.color = color;
 		this.backGroundColor = backGroundColor;
-		attackPower = 1; // デフォルトの攻撃力
+		attackPower = new AttackPower(1); // デフォルトの攻撃力
 	}
 
 	public void changeIcon(char icon){
 		this.icon = icon;
 	}
 
-	public void setAttackPower(int attackPower) {
+	public void setAttackPower(AttackPower attackPower) {
 		this.attackPower = attackPower;
 	}
 
-	public int getAttackPower() {
+	public AttackPower getAttackPower() {
 		return attackPower;
 	}
 	
