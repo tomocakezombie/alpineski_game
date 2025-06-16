@@ -81,7 +81,8 @@ public class Avalanche {
         for(int i = startX; i < width + startX; i++) {
             if(i > maxX) break;
             Obstacle obstacle = new Obstacle('＊', i, 0, 0, 1, 0, backgroundColor);
-            obstacle.setAttackPower(999);
+            AttackPower avalancheAttackPower = new AttackPower(999);
+            obstacle.setAttackPower(avalancheAttackPower);
             obstacles.add(obstacle);
         }
     }

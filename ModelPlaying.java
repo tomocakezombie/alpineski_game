@@ -38,7 +38,7 @@ public class ModelPlaying {
 
     // 旗を保存するリスト
     private LinkedList<Flag> flags;
-    private int intervalFlag;
+    // private int intervalFlag;
 
     // スコアの保存
     private Score score;
@@ -49,7 +49,10 @@ public class ModelPlaying {
     private GameComment successComment;
 
     // 障害物を置く頻度の設定
-    private int obstacleFrequency = 5; 
+    // private int obstacleFrequency = 5; 
+
+    // 障害物の頻度と旗の生成間隔を管理するクラス
+    private GameOption gameOption;
 
     // ゲームマップの内、プレイヤーのいけない所を設定
     private int grancePeriod;
@@ -82,21 +85,19 @@ public class ModelPlaying {
     ModelPlaying(ConsoleView view, GameState gameState, GameDifficulty gameDifficulty, Score score, ConsoleController controller) {
         // コンストラクタ
         this.view = view;
-        // PlayingMapX = 10;
-        // PlayingMapY = GameMapView.HEIGHT / 2;
         this.obstacles = new LinkedList<Obstacle>();
         this.flags = new LinkedList<Flag>();
         this.gameState = gameState;
         this.grancePeriod = 40;
         this.gameDifficulty = gameDifficulty;
         baseBackGroundColor = 15;                                   
-        this.player = new Player(3, GameMapView.WIDTH / 2, grancePeriod/4+1, '＠', grancePeriod, grancePeriod/4+1, GameMapView.WIDTH-grancePeriod, 31);
+        this.player = new Player(new Hitpoint(3), GameMapView.WIDTH / 2, grancePeriod/4+1, '＠', grancePeriod, grancePeriod/4+1, GameMapView.WIDTH-grancePeriod, 31);
         this.player.setplayerCharColor(1);
         this.player.setPlayerBackGroundColor(baseBackGroundColor);
         this.player.setHitpointBackGroundColor(baseBackGroundColor);
         this.player.setPlayerDamageColor(3);
 
-        this.intervalFlag = 30;
+        // this.intervalFlag = 30;
 
         int playerX = player.getPositionX();
         int playerY = player.getPositionY();
@@ -232,16 +233,19 @@ public class ModelPlaying {
     // 時間経過イベントの処理
     private void processTimeElapsed(){
 
-        Random random = new Random();
-        int randomValue = random.nextInt(obstacleFrequency - 1) + 1;
+        MyRandom randomObstacleFlecuency = new MyRandom(1, gameOption.getObstacleFrequency());
+        int randomValue = randomObstacleFlecuency.getRandomValue();
+        
         for (int i = 0; i < randomValue; i++) {
-            int randomX = random.nextInt(GameMapView.WIDTH - grancePeriod) + grancePeriod;
-            int randomY = GameMapView.HEIGHT - 2;
+            // int randomX = random.nextInt(GameMapView.WIDTH - grancePeriod) + grancePeriod;
+            MyRandom randomXGenerator = new MyRandom(grancePeriod, GameMapView.WIDTH - grancePeriod);
+            int randomX = randomXGenerator.getRandomValue();
+            int generateY = GameMapView.HEIGHT - 2;
 
             // 旗の範囲にかぶっていないかチェック
             boolean isOnFlag = false;
             for (Flag flag : flags) {
-                if (randomY == flag.getPositionY() &&
+                if (generateY == flag.getPositionY() &&
                     randomX >= flag.getPositionX() &&
                     randomX <= flag.getPositionX() + flag.getLineLength() + 1) {
                     isOnFlag = true;
@@ -253,12 +257,12 @@ public class ModelPlaying {
                 continue;
             }
 
-            Obstacle obstacle = new Obstacle('＊', randomX, randomY, 0, -1, 0, baseBackGroundColor);
+            Obstacle obstacle = new Obstacle('＊', randomX, generateY, 0, -1, 0, baseBackGroundColor);
             obstacles.add(obstacle);
         }
 
         // 旗の生成
-        if(flame % intervalFlag == 0){
+        if(flame % gameOption.getIntervalFlag() == 0){
             generateFlag();
         }
 
@@ -270,8 +274,10 @@ public class ModelPlaying {
             }
 
             if(flame == 500){
-                intervalFlag = 30;
-                obstacleFrequency = 5;
+                // intervalFlag = 30;
+                // obstacleFrequency = 5;
+                // todo
+                gameOption = new GameOption(GameOption.GameOptionType.HARD);
                 
             }
 
@@ -294,21 +300,18 @@ public class ModelPlaying {
         if(avalanche.isHappenAvalanche()){
             if(avalanche.isPlaceLeft()) {
                 // 雪崩が左側に発生する場合
-                Random random = new Random();
-                random.nextInt();
-                Flag flag = new Flag('Ｆ', 'ー', avalanche.getMinX() + random.nextInt(40 - 20) + 20 , GameMapView.HEIGHT-1 , 10, 1, baseBackGroundColor);
+                MyRandom randomXGenerator = new MyRandom(avalanche.getMinX() + 20, avalanche.getMaxX() - 20);
+                Flag flag = new Flag('Ｆ', 'ー', randomXGenerator.getRandomValue(), GameMapView.HEIGHT-1 , 10, 1, baseBackGroundColor);
                 flags.add(flag);
             } else {
                 // 雪崩が右側に発生する場合
-                Random random = new Random();
-                random.nextInt();
-                Flag flag = new Flag('Ｆ', 'ー', avalanche.getMaxX() - random.nextInt(40 - 20) + 20 , GameMapView.HEIGHT-1 , 10, 1, baseBackGroundColor);
+                MyRandom randomXGenerator = new MyRandom(avalanche.getMinX() + 20, avalanche.getMaxX() - 20);
+                Flag flag = new Flag('Ｆ', 'ー', randomXGenerator.getRandomValue(), GameMapView.HEIGHT-1 , 10, 1, baseBackGroundColor);
                 flags.add(flag);
             }
         } else {
-            Random random = new Random();
-            int randomX = grancePeriod + random.nextInt(GameMapView.WIDTH/4);
-            Flag flag = new Flag('Ｆ', 'ー', randomX, GameMapView.HEIGHT-1 , 10, 1, baseBackGroundColor);
+            MyRandom randomXGenerator = new MyRandom(grancePeriod + 15, GameMapView.WIDTH - grancePeriod - 15);
+            Flag flag = new Flag('Ｆ', 'ー', randomXGenerator.getRandomValue(), GameMapView.HEIGHT-1 , 10, 1, baseBackGroundColor);
             flags.add(flag);
         }
 
@@ -371,19 +374,16 @@ public class ModelPlaying {
     public void setGameDifficulty(){
         switch(gameDifficulty.getCurrentSelection()) {
             case GameDifficulty.NORMAL: // Normal
-                intervalFlag = 30;
-                obstacleFrequency = 4;
+                gameOption = new GameOption(GameOption.GameOptionType.NORMAL);
                 break;
             case GameDifficulty.HARD: // Hard
-                intervalFlag = 25;
-                obstacleFrequency = 8;
+                gameOption = new GameOption(GameOption.GameOptionType.HARD);
                 break;
             case GameDifficulty.ENDLRESS: // Endless
-                intervalFlag = 30;
-                obstacleFrequency = 5;
+                gameOption = new GameOption(GameOption.GameOptionType.ENDLESS);
                 break;
             default:
-                intervalFlag = 30;
+                throw new IllegalArgumentException("Unknown GameDifficulty: " + gameDifficulty.getCurrentSelection());
         }
     }
 
@@ -455,10 +455,6 @@ public class ModelPlaying {
 
         // エンドレス限定処理
         if(gameDifficulty.getCurrentSelection() == GameDifficulty.ENDLRESS){
-            // スピードアップ処理
-            // if(flame > 5 && 0 <= flame % 30 && flame % 30 < 5){
-            //     gameMapView.putString("．．．！", player.getPositionX() + 1, player.getPositionY() - 1, 4);
-            // }
 
             if(avalanche.isDangerous()){
                 gameMapView.putString("気を付けろ！", player.getPositionX() + 1, player.getPositionY() - 2, 4);
@@ -472,13 +468,10 @@ public class ModelPlaying {
      
         } 
 
-        
-
+        // コメント追加処理
         missObjComment.putComment(gameMapView);
         missFlagComment.putComment(gameMapView);
         successComment.putComment(gameMapView);
-
-
 
         // ConsoleViewに描画
         gameMapView.putConsoleView(view);
@@ -499,7 +492,8 @@ public class ModelPlaying {
             int obstaclePositionY = obstacle.getPositionY();
             if(obstaclePositionX == player.getPositionX() && obstaclePositionY == player.getPositionY()) {
                 // プレイヤーに弾が当たった場合の処理
-                player.damage(obstacle.getAttackPower());
+                AttackPower attackPower = obstacle.getAttackPower();
+                player.damage(attackPower.getAttackPowerIntValue());
                 invincibleTime = INVINCIBLE_TIME_MAX; // 無敵時間を設定
                 missObjComment.resetViewFlame();
             }
@@ -510,7 +504,8 @@ public class ModelPlaying {
             int obstaclePositionY = obstacle.getPositionY();
             if(obstaclePositionX == player.getPositionX() && obstaclePositionY == player.getPositionY()) {
                 // プレイヤーに雪崩の障害物が当たった場合の処理
-                player.damage(obstacle.getAttackPower());
+                AttackPower attackPower = obstacle.getAttackPower();
+                player.damage(attackPower.getAttackPowerIntValue());
                 invincibleTime = INVINCIBLE_TIME_MAX; // 無敵時間を設定
                 missObjComment.resetViewFlame();
             }

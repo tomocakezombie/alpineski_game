@@ -1,6 +1,7 @@
 public class Player {
-    private int hitpoint;
-    private int maxHitpoint;
+    private Hitpoint hitpoint;
+    // private int maxHitpoint;
+    private Hitpoint maxHitpoint;
     private int positionX;
     private int positionY;
     private int startPositionX;
@@ -19,9 +20,9 @@ public class Player {
     private int hitpointCharColor = 1;
     private int hitpointBackGroundColor = 0;
 
-    Player(int hitpoint, int positionX, int positionY, char playerChar, int minPositionX, int minPositionY, int maxPositionX, int maxPositionY) {
-        if (hitpoint < 0) {
-            throw new IllegalArgumentException("Hitpoint cannot be negative: " + hitpoint);
+    Player(Hitpoint hitpoint, int positionX, int positionY, char playerChar, int minPositionX, int minPositionY, int maxPositionX, int maxPositionY) {
+        if (hitpoint.getHitpointIntValue() < 0) {
+            throw new IllegalArgumentException("Hitpoint cannot be negative: " + hitpoint.getHitpointIntValue() );
         }
         if( positionX < minPositionX || positionX >= maxPositionX) {
             throw new IllegalArgumentException("Invalid positionX: " + positionX + ", must be between " + minPositionX + " and " + (maxPositionX - 1));
@@ -70,11 +71,11 @@ public class Player {
     }
 
     public int getHitpoint() {
-        return hitpoint;
+        return hitpoint.getHitpointIntValue();
     }
 
     public void resetHitpoint() {
-        this.hitpoint = maxHitpoint; // ヒットポイントを最大値にリセット
+        this.hitpoint = new Hitpoint(maxHitpoint.getHitpointIntValue());
     }
 
     public void addX() {
@@ -101,16 +102,18 @@ public class Player {
     }
 
     public void damage() {
-        hitpoint = Math.max(hitpoint - 1, 0);
+        int newHitpoint = Math.max(hitpoint.getHitpointIntValue() - 1, 0);
+        hitpoint = new Hitpoint(newHitpoint);
     }
 
     public void damage(int damageAmount) {
-        hitpoint = Math.max(hitpoint - damageAmount, 0);
+        int newHitpoint = Math.max(hitpoint.getHitpointIntValue() - damageAmount, 0);
+        hitpoint = new Hitpoint(newHitpoint);
     }
 
     public void heal() {
-        hitpoint = Math.min(hitpoint + 1, maxHitpoint);
-        hitpoint++;
+        int newHitpoint = Math.min(hitpoint.getHitpointIntValue() + 1, maxHitpoint.getHitpointIntValue());
+        hitpoint = new Hitpoint(newHitpoint);
     }
 
     public int getPositionX(){
@@ -147,13 +150,11 @@ public class Player {
 
     public void putPlayerHitpoint(GameMapView view, int x, int y) throws InterruptedException {
         String hitpointString = "";
-        for (int i = 0; i < hitpoint; i++) {
+        for (int i = 0; i < hitpoint.getHitpointIntValue(); i++) {
             hitpointString += hitpointChar;
         }
-        // view.putString(hitpointString, x, y, hitpointCharColor, hitpointBackGroundColor);
+ 
         view.putString(hitpointString, x, y, hitpointCharColor);
-
-        // System.out.println("Hitpoint: " + hitpoint + ", Max Hitpoint: " + maxHitpoint);
     }
 
     public void setHitpointCharColor(int hitpointCharColor) {
