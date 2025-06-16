@@ -35,6 +35,16 @@ public class ModelStart {
     private int HiddenImageX = 55;
     private int HiddenImageY = ConsoleView.HEIGHT;
     private int HiddenImageYMin = 10;
+
+    // 隠し画像を保存
+    private MapData HiddenImage2;
+    // private KeySequenceDetector keySequenceDetector2;
+    private KeyCount keycount;
+    private int HiddenImage2X = 0;
+    private int HiddenImage2Y = ConsoleView.HEIGHT;
+    private int HiddenImage2YMin = 20;
+
+
     
     // ランキングのロゴで表示する
     private MapData RankingLogo;
@@ -135,22 +145,29 @@ public class ModelStart {
         MountainDifficultyXs[0]=-15;
         MountainDifficultyYs[0]=14;
 
-        // MountainDifficultyXs[1]=45;
-        // MountainDifficultyYs[1]=20;
 
         ReadFile readfileHiddenImage = new ReadFile("./ReadFiles/SECRET.txt");
-
-        // readfileHiddenImage.setBasicColor(baseBackGroundColor);
         readfileHiddenImage.setColor('Ａ', 255, 255);
         readfileHiddenImage.setColor('Ｂ', 0, 0);
         readfileHiddenImage.setColor('Ｃ', 172, 172);
         readfileHiddenImage.setColor('Ｄ', 178, 178);
         readfileHiddenImage.setColor('Ｅ', baseBackGroundColor, baseBackGroundColor);
-
         HiddenImage = readfileHiddenImage.getMapData();
+
+        ReadFile readfileHiddenImage2 = new ReadFile("./ReadFiles/SECRET2.txt");
+        readfileHiddenImage2.setColor('Ａ', 255, 255);
+        readfileHiddenImage2.setColor('Ｂ', 0, 0);
+        readfileHiddenImage2.setColor('Ｃ', 172, 172);
+        readfileHiddenImage2.setColor('Ｄ', 178, 178);
+        readfileHiddenImage2.setColor('Ｅ', baseBackGroundColor, baseBackGroundColor);
+        readfileHiddenImage2.setColor('Ｆ', 255, 255);
+        HiddenImage2 = readfileHiddenImage2.getMapData();
 
         List<String> sequence = List.of("UP", "UP", "DOWN", "DOWN", "LEFT", "RIGHT", "LEFT", "RIGHT", "b", "a");
         keySequenceDetector = new KeySequenceDetector(sequence);
+
+        // keySequenceDetector2 = new KeySequenceDetector(sequence);
+        keycount = new KeyCount(50);
 
         String[] userSelectString = new String[]{
             "モード選択",
@@ -231,13 +248,39 @@ public class ModelStart {
         Bullet bulletTest = new Bullet('＊', randomValue, 0, 1, 1, 254, baseBackGroundColor);
         bullets.add(bulletTest);
 
+        moveArrows();
+
+
+        // 秘密画像の動作
+        if(keySequenceDetector.isDetected()) {
+            if(HiddenImageY > HiddenImageYMin) {
+                // 秘密画像が表示されている場合、Y座標を下げる
+                HiddenImageY -= 1;
+            }
+        }
+
+        // 隠し画像2の動作
+        if(keycount.isFilled()) {
+            if(HiddenImage2Y > HiddenImage2YMin) {
+                // 秘密画像が表示されている場合、Y座標を下げる
+                HiddenImage2Y -= 1;
+            }
+        }
+
         flame++;
     }
 
     // キー入力処理
     private void processKeyInput(String event) {
+        // 隠しコマンド入力受付
         if(isUserEnterDifficulty){
             keySequenceDetector.input(event);
+        }
+
+        if(!isUserEnterDescriptin && !isUserEnterRanking && !isUserEnterDifficulty) {
+            // ユーザがルール確認やランキングを選択していない場合
+            // keySequenceDetector2.input(event);
+            keycount.increment();
         }
 
         if(event.equals("ENTER")){
@@ -260,6 +303,9 @@ public class ModelStart {
                 // 初期化
                 HiddenImageY = ConsoleView.HEIGHT;
                 keySequenceDetector.reset();
+                HiddenImage2Y = ConsoleView.HEIGHT;
+                // keySequenceDetector2.reset();
+                keycount.reset();
                 return;
             }
 
@@ -331,10 +377,6 @@ public class ModelStart {
             if(keySequenceDetector.isDetected()) {
                 // シークエンスが検出された場合
                 view.putMap(HiddenImageX, HiddenImageY, HiddenImage);
-                if(HiddenImageY > HiddenImageYMin) {
-                    // 秘密画像が表示されている場合、Y座標を下げる
-                    HiddenImageY -= 1;
-                }
             }
 
             view.putString("モード選択画面", ConsoleView.WIDTH / 2 - 5, ConsoleView.HEIGHT / 4-5, 15, baseBackGroundColor);
@@ -373,8 +415,12 @@ public class ModelStart {
             // putYajirusi();
             backArrow.put(view);
             view.putString("ＥＮＴＥＲキーで戻る", ConsoleView.WIDTH / 2 - 5, ConsoleView.HEIGHT - 3, 1, baseBackGroundColor);
-
             return;
+        }
+
+        if(keycount.isFilled()) {
+            // シークエンスが検出された場合
+            view.putMap(HiddenImage2X, HiddenImage2Y, HiddenImage2);
         }
 
         view.putMap(MountainX, MountainY, Mountain);
@@ -411,7 +457,6 @@ public class ModelStart {
         String[] titles = { "NORMAL", "HARD", "ENDLESS" };
 
         int baseX = ConsoleView.WIDTH / 8; // 横並びの基準位置
-        // int sectionY = ConsoleView.HEIGHT / 4 - 5;
         int sectionY = ConsoleView.HEIGHT / 2;
 
         view.putMap(RankingLogoX, RankingLogoY, RankingLogo);
@@ -442,6 +487,17 @@ public class ModelStart {
             }
         }
 
+    }
+
+    private void moveArrows() {
+        // 矢印の動作
+        backArrow.move();
+        for(Arrow arrow : frontArrows) {
+            arrow.move();
+        }
+        for(Arrow arrow : difficultArrows) {
+            arrow.move();
+        }
     }
     
 }
