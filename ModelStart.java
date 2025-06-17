@@ -119,13 +119,14 @@ public class ModelStart {
         Logo2 = readfile2.getMapData();
 
         ReadFile readfileMountain = new ReadFile("./ReadFiles/MOUNTAIN.txt");
-        readfileMountain.setColor('＼', 15, baseBackGroundColor);
+        readfileMountain.setColor('＼', 15, 253);
         readfileMountain.setColor('／', 15, baseBackGroundColor);
         readfileMountain.setColor('￣', 15, baseBackGroundColor);
         readfileMountain.setColor('　', baseBackGroundColor, baseBackGroundColor);
         readfileMountain.setBasicColor(baseBackGroundColor);
         Mountain = readfileMountain.getMapData();
-        MountainX = 52;
+        // MountainX = 52;
+        MountainX = 40;
         MountainY = 20;
 
         ReadFile readfileDescription = new ReadFile("./ReadFiles/DESCRIPTION.txt");
