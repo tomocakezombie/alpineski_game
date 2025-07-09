@@ -50,11 +50,9 @@ public class ModelPrepareStart {
         view.setResetBackGroundColor(0);
 
         if(flameCount.getFlameCount() < flameCount.getFlameCountMax()/2){
-            view.putString("企画者：　ｔ２３ｃｓ００７　榎尾　圭登", ConsoleView.WIDTH / 2 - 10, ConsoleView.HEIGHT / 2 - 1, 234+flameCount.getFlameCount(), 0);
-            view.putString("開発者：　ｔ２３ｃｓ０１４　神田　智輝", ConsoleView.WIDTH / 2 - 10, ConsoleView.HEIGHT / 2 + 1, 234+flameCount.getFlameCount(), 0);    
+            view.putString("開発者：　ｔ２３ｃｓ０１４　", ConsoleView.WIDTH / 2 - 10, ConsoleView.HEIGHT / 2 + 1, 234+flameCount.getFlameCount(), 0);    
         } else {
-            view.putString("企画者：　ｔ２３ｃｓ００７　榎尾　圭登", ConsoleView.WIDTH / 2 - 10, ConsoleView.HEIGHT / 2 - 1, 255 - (flameCount.getFlameCount() - flameCount.getFlameCountMax()/2), 0);
-            view.putString("開発者：　ｔ２３ｃｓ０１４　神田　智輝", ConsoleView.WIDTH / 2 - 10, ConsoleView.HEIGHT / 2 + 1, 255 - (flameCount.getFlameCount() - flameCount.getFlameCountMax()/2), 0);    
+            view.putString("開発者：　ｔ２３ｃｓ０１４　", ConsoleView.WIDTH / 2 - 10, ConsoleView.HEIGHT / 2 + 1, 255 - (flameCount.getFlameCount() - flameCount.getFlameCountMax()/2), 0);    
         } 
     }
 }
